@@ -250,14 +250,18 @@ load purifiedHappy.mat
 load purifiedNeutral.mat
 load purifiedSad.mat
 
+%============================================================================================================================%
+%============================================================================================================================%
+% distribution of F0
 figure;
+
+% F0 of Neutral
 subplot(2,2,1);
 title('distribution of F0 of state Neutral');
 hold on;
 LegHandles = []; LegText = {};
 
-
-% --- Plot data originally in dataset "NeutralTime"
+% --- Plot data originally in dataset "purifiedNeutral.F0"
 [CdfF,CdfX] = ecdf(purifiedNeutral.F0,'Function','cdf');  % compute empirical cdf
 BinInfo.rule = 3;
 BinInfo.nbins = 10;
@@ -276,12 +280,11 @@ XLim = get(gca,'XLim');
 XLim = XLim + [-1 1] * 0.01 * diff(XLim);
 XGrid = linspace(XLim(1),XLim(2),100);
 
-
-% --- Create fit "fitNeutralTime"
+% --- Create fit "fitNeutralF0"
 
 % Fit this distribution to get parameter values
 % To use parameter estimates from the original fit:
-%     pd1 = ProbDistUnivParam('gamma',[ 2.677192820064, 70.10415967598])
+
 pd1 = fitdist(purifiedNeutral.F0, 'normal');
 histNeutral.F0.average = pd1.mean;
 histNeutral.F0.deviation = pd1.sigma;
@@ -309,14 +312,13 @@ set(hLegend,'Interpreter','none');
 
 
 
-
+% F0 of Sad
 subplot(2,2,3);
 title('distribution of F0 of state Sad');
 hold on;
 LegHandles = []; LegText = {};
 
-
-% --- Plot data originally in dataset "NeutralTime"
+% --- Plot data originally in dataset "purifiedSad.F0"
 [CdfF,CdfX] = ecdf(purifiedSad.F0,'Function','cdf');  % compute empirical cdf
 BinInfo.rule = 3;
 BinInfo.nbins = 10;
@@ -335,12 +337,11 @@ XLim = get(gca,'XLim');
 XLim = XLim + [-1 1] * 0.01 * diff(XLim);
 XGrid = linspace(XLim(1),XLim(2),100);
 
-
-% --- Create fit "fitNeutralTime"
+% --- Create fit "fitSadF0"
 
 % Fit this distribution to get parameter values
 % To use parameter estimates from the original fit:
-%     pd1 = ProbDistUnivParam('gamma',[ 2.677192820064, 70.10415967598])
+
 pd1 = fitdist(purifiedSad.F0, 'normal');
 histSad.F0.average = pd1.mean;
 histSad.F0.deviation = pd1.sigma;
@@ -368,13 +369,13 @@ set(hLegend,'Interpreter','none');
 
 
 
+% F0 of Angry
 subplot(2,2,2);
 title('distribution of F0 of state Angry');
 hold on;
 LegHandles = []; LegText = {};
 
-
-% --- Plot data originally in dataset "NeutralTime"
+% --- Plot data originally in dataset "purifiedAngry.F0"
 [CdfF,CdfX] = ecdf(purifiedAngry.F0,'Function','cdf');  % compute empirical cdf
 BinInfo.rule = 3;
 BinInfo.nbins = 10;
@@ -393,12 +394,11 @@ XLim = get(gca,'XLim');
 XLim = XLim + [-1 1] * 0.01 * diff(XLim);
 XGrid = linspace(XLim(1),XLim(2),100);
 
-
-% --- Create fit "fitNeutralTime"
+% --- Create fit "fitAngryF0"
 
 % Fit this distribution to get parameter values
 % To use parameter estimates from the original fit:
-%     pd1 = ProbDistUnivParam('gamma',[ 2.677192820064, 70.10415967598])
+
 pd1 = fitdist(purifiedAngry.F0, 'normal');
 histAngry.F0.average = pd1.mean;
 histAngry.F0.deviation = pd1.sigma;
@@ -425,13 +425,14 @@ set(hLegend,'Interpreter','none');
 % legend off;
 
 
+
+% F0 of Happy
 subplot(2,2,4);
 title('distribution of F0 of state Happy');
 hold on;
 LegHandles = []; LegText = {};
 
-
-% --- Plot data originally in dataset "NeutralTime"
+% --- Plot data originally in dataset "purifiedHappy.F0"
 [CdfF,CdfX] = ecdf(purifiedHappy.F0,'Function','cdf');  % compute empirical cdf
 BinInfo.rule = 3;
 BinInfo.nbins = 10;
@@ -450,12 +451,11 @@ XLim = get(gca,'XLim');
 XLim = XLim + [-1 1] * 0.01 * diff(XLim);
 XGrid = linspace(XLim(1),XLim(2),100);
 
-
-% --- Create fit "fitNeutralTime"
+% --- Create fit "fitHappyF0"
 
 % Fit this distribution to get parameter values
 % To use parameter estimates from the original fit:
-%     pd1 = ProbDistUnivParam('gamma',[ 2.677192820064, 70.10415967598])
+
 pd1 = fitdist(purifiedHappy.F0, 'normal');
 histHappy.F0.average = pd1.mean;
 histHappy.F0.deviation = pd1.sigma;
@@ -483,21 +483,18 @@ set(hLegend,'Interpreter','none');
 
 
 
-
-
-%% 
-
-
-
-% Time distribution
+%============================================================================================================================%
+%============================================================================================================================%
+% distribution of Time
 figure;
+
+% Time of Neutral
 subplot(2,2,1);
 title('distribution of time of state Neutral');
 hold on;
 LegHandles = []; LegText = {};
 
-
-% --- Plot data originally in dataset "NeutralTime"
+% --- Plot data originally in dataset "purifiedNeutral.Time"
 [CdfF,CdfX] = ecdf(purifiedNeutral.Time,'Function','cdf');  % compute empirical cdf
 BinInfo.rule = 3;
 BinInfo.nbins = 10;
@@ -516,12 +513,11 @@ XLim = get(gca,'XLim');
 XLim = XLim + [-1 1] * 0.01 * diff(XLim);
 XGrid = linspace(XLim(1),XLim(2),100);
 
-
 % --- Create fit "fitNeutralTime"
 
 % Fit this distribution to get parameter values
 % To use parameter estimates from the original fit:
-%     pd1 = ProbDistUnivParam('gamma',[ 2.677192820064, 70.10415967598])
+
 pd1 = fitdist(purifiedNeutral.Time, 'gamma');
 histNeutral.Time.Shape = pd1.a;
 histNeutral.Time.Scale = pd1.b;
@@ -551,15 +547,13 @@ set(hLegend,'Interpreter','none');
 
 
 
-% %% 
-
+% Time of Sad
 subplot(2,2,3);
 title('distribution of time of state Sad');
 hold on;
 LegHandles = []; LegText = {};
 
-
-% --- Plot data originally in dataset "NeutralTime"
+% --- Plot data originally in dataset "purifiedSad.Time"
 [CdfF,CdfX] = ecdf(purifiedSad.Time,'Function','cdf');  % compute empirical cdf
 BinInfo.rule = 3;
 BinInfo.nbins = 10;
@@ -578,12 +572,11 @@ XLim = get(gca,'XLim');
 XLim = XLim + [-1 1] * 0.01 * diff(XLim);
 XGrid = linspace(XLim(1),XLim(2),100);
 
-
-% --- Create fit "fitNeutralTime"
+% --- Create fit "fitSadTime"
 
 % Fit this distribution to get parameter values
 % To use parameter estimates from the original fit:
-%     pd1 = ProbDistUnivParam('gamma',[ 2.677192820064, 70.10415967598])
+
 pd1 = fitdist(purifiedSad.Time, 'gamma');
 histSad.Time.Shape = pd1.a;
 histSad.Time.Scale = pd1.b;
@@ -611,15 +604,13 @@ set(hLegend,'Interpreter','none');
 
 
 
-% %% 
-
+% Time of Angry
 subplot(2,2,2);
 title('distribution of time of state Angry');
 hold on;
 LegHandles = []; LegText = {};
 
-
-% --- Plot data originally in dataset "NeutralTime"
+% --- Plot data originally in dataset "purifiedAngry.Time"
 [CdfF,CdfX] = ecdf(purifiedAngry.Time,'Function','cdf');  % compute empirical cdf
 BinInfo.rule = 3;
 BinInfo.nbins = 10;
@@ -638,12 +629,11 @@ XLim = get(gca,'XLim');
 XLim = XLim + [-1 1] * 0.01 * diff(XLim);
 XGrid = linspace(XLim(1),XLim(2),100);
 
-
-% --- Create fit "fitNeutralTime"
+% --- Create fit "fitAngryTime"
 
 % Fit this distribution to get parameter values
 % To use parameter estimates from the original fit:
-%     pd1 = ProbDistUnivParam('gamma',[ 2.677192820064, 70.10415967598])
+
 pd1 = fitdist(purifiedAngry.Time, 'gamma');
 histAngry.Time.Shape = pd1.a;
 histAngry.Time.Scale = pd1.b;
@@ -653,7 +643,6 @@ hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
     'Marker','none', 'MarkerSize',6);
 LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitAngryTime';
-
 
 text(800, 3.5e-3, str1);
 text(800, 3e-3, num2str(histAngry.Time.Shape * histAngry.Time.Scale));
@@ -669,14 +658,14 @@ hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'L
 set(hLegend,'Interpreter','none');
 
 
-% %% 
+
+% Time of Happy
 subplot(2,2,4);
 title('distribution of time of state Happy');
 hold on;
 LegHandles = []; LegText = {};
 
-
-% --- Plot data originally in dataset "NeutralTime"
+% --- Plot data originally in dataset "purifiedHappy.Time"
 [CdfF,CdfX] = ecdf(purifiedHappy.Time,'Function','cdf');  % compute empirical cdf
 BinInfo.rule = 3;
 BinInfo.nbins = 10;
@@ -695,12 +684,11 @@ XLim = get(gca,'XLim');
 XLim = XLim + [-1 1] * 0.01 * diff(XLim);
 XGrid = linspace(XLim(1),XLim(2),100);
 
-
-% --- Create fit "fitNeutralTime"
+% --- Create fit "fitHappyTime"
 
 % Fit this distribution to get parameter values
 % To use parameter estimates from the original fit:
-%     pd1 = ProbDistUnivParam('gamma',[ 2.677192820064, 70.10415967598])
+
 pd1 = fitdist(purifiedHappy.Time, 'gamma');
 histHappy.Time.Shape = pd1.a;
 histHappy.Time.Scale = pd1.b;
@@ -726,15 +714,19 @@ set(hLegend,'Interpreter','none');
 
 
 
-%% 
+%============================================================================================================================%
+%============================================================================================================================%
+% distribution of Pow
 figure;
+
+
+% Pow of Neutral
 subplot(2,2,1);
 title('distribution of pow of state Neutral');
 hold on;
 LegHandles = []; LegText = {};
 
-
-% --- Plot data originally in dataset "NeutralTime"
+% --- Plot data originally in dataset "purifiedNeutral.Pow"
 [CdfF,CdfX] = ecdf(purifiedNeutral.Pow,'Function','cdf');  % compute empirical cdf
 BinInfo.rule = 3;
 BinInfo.nbins = 10;
@@ -753,12 +745,11 @@ XLim = get(gca,'XLim');
 XLim = XLim + [-1 1] * 0.01 * diff(XLim);
 XGrid = linspace(XLim(1),XLim(2),100);
 
-
-% --- Create fit "fitNeutralTime"
+% --- Create fit "fitNeutralPow"
 
 % Fit this distribution to get parameter values
 % To use parameter estimates from the original fit:
-%     pd1 = ProbDistUnivParam('gamma',[ 2.677192820064, 70.10415967598])
+
 pd1 = fitdist(purifiedNeutral.Pow, 'normal');
 histNeutral.Pow.average = pd1.mean;
 histNeutral.Pow.deviation = pd1.sigma;
@@ -786,14 +777,13 @@ set(hLegend,'Interpreter','none');
 
 
 
-
+% Pow of Sad
 subplot(2,2,3);
 title('distribution of pow of state Sad');
 hold on;
 LegHandles = []; LegText = {};
 
-
-% --- Plot data originally in dataset "NeutralTime"
+% --- Plot data originally in dataset "purifiedSad.Pow"
 [CdfF,CdfX] = ecdf(purifiedSad.Pow,'Function','cdf');  % compute empirical cdf
 BinInfo.rule = 3;
 BinInfo.nbins = 10;
@@ -812,12 +802,11 @@ XLim = get(gca,'XLim');
 XLim = XLim + [-1 1] * 0.01 * diff(XLim);
 XGrid = linspace(XLim(1),XLim(2),100);
 
-
-% --- Create fit "fitNeutralTime"
+% --- Create fit "fitSadPow"
 
 % Fit this distribution to get parameter values
 % To use parameter estimates from the original fit:
-%     pd1 = ProbDistUnivParam('gamma',[ 2.677192820064, 70.10415967598])
+
 pd1 = fitdist(purifiedSad.Pow, 'normal');
 histSad.Pow.average = pd1.mean;
 histSad.Pow.deviation = pd1.sigma;
@@ -845,13 +834,13 @@ set(hLegend,'Interpreter','none');
 
 
 
+% Pow of Angry
 subplot(2,2,2);
 title('distribution of pow of state Angry');
 hold on;
 LegHandles = []; LegText = {};
 
-
-% --- Plot data originally in dataset "NeutralTime"
+% --- Plot data originally in dataset "purifiedAngry.Pow"
 [CdfF,CdfX] = ecdf(purifiedAngry.Pow,'Function','cdf');  % compute empirical cdf
 BinInfo.rule = 3;
 BinInfo.nbins = 10;
@@ -870,12 +859,11 @@ XLim = get(gca,'XLim');
 XLim = XLim + [-1 1] * 0.01 * diff(XLim);
 XGrid = linspace(XLim(1),XLim(2),100);
 
-
-% --- Create fit "fitNeutralTime"
+% --- Create fit "fitAngryPow"
 
 % Fit this distribution to get parameter values
 % To use parameter estimates from the original fit:
-%     pd1 = ProbDistUnivParam('gamma',[ 2.677192820064, 70.10415967598])
+
 pd1 = fitdist(purifiedAngry.Pow, 'normal');
 histAngry.Pow.average = pd1.mean;
 histAngry.Pow.deviation = pd1.sigma;
@@ -902,13 +890,14 @@ set(hLegend,'Interpreter','none');
 % legend off;
 
 
+
+% Pow of Happy
 subplot(2,2,4);
 title('distribution of pow of state Happy');
 hold on;
 LegHandles = []; LegText = {};
 
-
-% --- Plot data originally in dataset "NeutralTime"
+% --- Plot data originally in dataset "purifiedHappy.Pow"
 [CdfF,CdfX] = ecdf(purifiedHappy.Pow,'Function','cdf');  % compute empirical cdf
 BinInfo.rule = 3;
 BinInfo.nbins = 10;
@@ -927,12 +916,11 @@ XLim = get(gca,'XLim');
 XLim = XLim + [-1 1] * 0.01 * diff(XLim);
 XGrid = linspace(XLim(1),XLim(2),100);
 
-
-% --- Create fit "fitNeutralTime"
+% --- Create fit "fitHappyPow"
 
 % Fit this distribution to get parameter values
 % To use parameter estimates from the original fit:
-%     pd1 = ProbDistUnivParam('gamma',[ 2.677192820064, 70.10415967598])
+
 pd1 = fitdist(purifiedHappy.Pow, 'normal');
 histHappy.Pow.average = pd1.mean;
 histHappy.Pow.deviation = pd1.sigma;
