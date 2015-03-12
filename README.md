@@ -7,7 +7,7 @@ In order to make this working properly, please read the stuff as follows:
 1. Make sure that you have STRAIGHT library correctly installed, due to copyright reasons, the library itself is not provided.
 
 2. If you are using Matlab 2012b and before, please change function audioread into legacy waveread for back compatibility.
-This problem will be fixed sooner or later, but I still suggest using the up-to-date version for a number of reasons.
+This problem will be fixed sooner or later, but I still suggest using the up-to-date version for a number of reasons. (Already fixed, but running time slightly affected.)
 
 3. If you are using this to train your own model, specify the path to your library in line 5 in feature_extration.m.
 
