@@ -17,232 +17,234 @@ f0floor = 50;
 f0ceil = 500;
 
 
-% %% Training Serial Version
-% % F0 time and power calculation
-% % raw, still remain to be processed
-% infoAngry = cell(50,1);
-% infoHappy = cell(50,1);
-% infoNeutral = cell(50,1);
-% infoSad = cell(50,1);
-% 
-% for i = 201:250
-%     
-%     % Angry information
-%     fileAngryTemp = strcat(filePathAngry, int2str(i), '.wav');
-%     [audioAngry, fs] = audioread(fileAngryTemp);
-%     [f0raw, vuv, auxouts] = MulticueF0v14(audioAngry, fs, f0floor, f0ceil);
-%     infoAngry{i-200}.f0raw = f0raw;
-%     infoAngry{i-200}.vuv = vuv;
-%     infoAngry{i-200}.pow = auxouts.InstantaneousPower;
-%     
-%     % Happy information
-%     fileHappyTemp = strcat(filePathHappy, int2str(i), '.wav');
-%     [audioHappy, fs] = audioread(fileHappyTemp);
-%     [f0raw, vuv, auxouts] = MulticueF0v14(audioHappy, fs, f0floor, f0ceil);
-%     infoHappy{i-200}.f0raw = f0raw;
-%     infoHappy{i-200}.vuv = vuv;
-%     infoHappy{i-200}.pow = auxouts.InstantaneousPower;
-%     
-%     % Neutral information
-%     fileNeutralTemp = strcat(filePathNeutral, int2str(i), '.wav');
-%     [audioNeutral, fs] = audioread(fileNeutralTemp);
-%     [f0raw, vuv, auxouts] = MulticueF0v14(audioNeutral, fs, f0floor, f0ceil);
-%     infoNeutral{i-200}.f0raw = f0raw;
-%     infoNeutral{i-200}.vuv = vuv;
-%     infoNeutral{i-200}.pow = auxouts.InstantaneousPower;
-%     
-%     % Sad information
-%     fileSadTemp = strcat(filePathSad, int2str(i), '.wav');
-%     [audioSad, fs] = audioread(fileSadTemp);
-%     [f0raw, vuv, auxouts] = MulticueF0v14(audioSad, fs, f0floor, f0ceil);
-%     infoSad{i-200}.f0raw = f0raw;
-%     infoSad{i-200}.vuv = vuv;
-%     infoSad{i-200}.pow = auxouts.InstantaneousPower;
-%     
-% end
-% 
-% % save workspace for other use
-% save infoAngry.mat infoAngry;
-% save infoHappy.mat infoHappy;
-% save infoNeutral.mat infoNeutral;
-% save infoSad.mat infoSad;
-% 
-% 
-% %% Training parallel version
-% % F0 time and power calculation
-% % raw, still remain to be processed
-% infoAngry = cell(50,1);
-% infoHappy = cell(50,1);
-% infoNeutral = cell(50,1);
-% infoSad = cell(50,1);
-% 
-% parfor i = 201:250
-%     
-%     % Angry information
-%     fileAngryTemp = strcat(filePathAngry, int2str(i), '.wav');
-%     [audioAngry, fs] = audioread(fileAngryTemp);
-%     [f0rawA, vuvA, auxoutsA] = MulticueF0v14(audioAngry, fs, f0floor, f0ceil);
-%     infoAngry{i-200}.f0raw = f0rawA;
-%     infoAngry{i-200}.vuv = vuvA;
-%     infoAngry{i-200}.pow = auxoutsA.InstantaneousPower;
-%     
-%     % Happy information
-%     fileHappyTemp = strcat(filePathHappy, int2str(i), '.wav');
-%     [audioHappy, fs] = audioread(fileHappyTemp);
-%     [f0rawH, vuvH, auxoutsH] = MulticueF0v14(audioHappy, fs, f0floor, f0ceil);
-%     infoHappy{i-200}.f0raw = f0rawH;
-%     infoHappy{i-200}.vuv = vuvH;
-%     infoHappy{i-200}.pow = auxoutsH.InstantaneousPower;
-%     
-%     % Neutral information
-%     fileNeutralTemp = strcat(filePathNeutral, int2str(i), '.wav');
-%     [audioNeutral, fs] = audioread(fileNeutralTemp);
-%     [f0rawN, vuvN, auxoutsN] = MulticueF0v14(audioNeutral, fs, f0floor, f0ceil);
-%     infoNeutral{i-200}.f0raw = f0rawN;
-%     infoNeutral{i-200}.vuv = vuvN;
-%     infoNeutral{i-200}.pow = auxoutsN.InstantaneousPower;
-%     
-%     % Sad information
-%     fileSadTemp = strcat(filePathSad, int2str(i), '.wav');
-%     [audioSad, fs] = audioread(fileSadTemp);
-%     [f0rawS, vuvS, auxoutsS] = MulticueF0v14(audioSad, fs, f0floor, f0ceil);
-%     infoSad{i-200}.f0raw = f0rawS;
-%     infoSad{i-200}.vuv = vuvS;
-%     infoSad{i-200}.pow = auxoutsS.InstantaneousPower;
-%     
-% end
-% 
-% % save workspace for other use
-% save infoAngry_parallel.mat infoAngry;
-% save infoHappy_parallel.mat infoHappy;
-% save infoNeutral_parallel.mat infoNeutral;
-% save infoSad_parallel.mat infoSad;
-% 
-% 
-% 
-% %% data purifying
-% % process data into desired ones
-% 
-% % restore workspace
-% clear;clc;
-% load('infoAngry.mat');
-% load('infoHappy.mat');
-% load('infoNeutral.mat');
-% load('infoSad.mat');
-% 
-% 
-% % %% Unit Test
-% % % DESCRIPTIVE TEXT
-% % [idx, speechl] = time_calc(infoHappy{5}.vuv);
-% 
-% % Angry
-% purifiedAngry.F0 = 0;
-% purifiedAngry.Time = 0;
-% purifiedAngry.Pow = 0;
-% 
-% for i= 1:50
-%     
-%     purifiedF0 = infoAngry{i}.f0raw .* infoAngry{i}.vuv;
-%     purifiedF0 = purifiedF0(purifiedF0 ~= 0);
-%     purifiedAngry.F0 =  [ purifiedAngry.F0; purifiedF0 ];
-%     
-%     [idx, purifiedTime] = time_calc(infoAngry{i}.vuv);
-%     purifiedAngry.Time = [purifiedAngry.Time; purifiedTime];
-%     
-%     for j = 1:length(idx)
-%         purifiedPow = sum(infoAngry{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
-%         purifiedAngry.Pow = [purifiedAngry.Pow; purifiedPow];
-%     end
-% end
-% 
-% purifiedAngry.F0 = purifiedAngry.F0(purifiedAngry.F0 ~= 0);
-% purifiedAngry.Time = purifiedAngry.Time(purifiedAngry.Time ~= 0);
-% purifiedAngry.Pow = purifiedAngry.Pow(purifiedAngry.Pow ~= 0);
-% 
-% 
-% % Happy
-% purifiedHappy.F0 = 0;
-% purifiedHappy.Time = 0;
-% purifiedHappy.Pow = 0;
-% for i= 1:50
-%     
-%     purifiedF0 = infoHappy{i}.f0raw .* infoHappy{i}.vuv;
-%     purifiedF0 = purifiedF0(purifiedF0 ~= 0);
-%     purifiedHappy.F0 =  [ purifiedHappy.F0; purifiedF0 ];
-%     
-%     [idx, purifiedTime] = time_calc(infoHappy{i}.vuv);
-%     purifiedHappy.Time = [purifiedHappy.Time; purifiedTime];
-%     
-%     for j = 1:length(idx)
-%         purifiedPow = sum(infoHappy{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
-%         purifiedHappy.Pow = [purifiedHappy.Pow; purifiedPow];
-%     end
-% end
-% 
-% purifiedHappy.F0 = purifiedHappy.F0(purifiedHappy.F0 ~= 0);
-% purifiedHappy.Time = purifiedHappy.Time(purifiedHappy.Time ~= 0);
-% purifiedHappy.Pow = purifiedHappy.Pow(purifiedHappy.Pow ~= 0);
-% 
-% 
-% % Neutral
-% purifiedNeutral.F0 = 0;
-% purifiedNeutral.Time = 0;
-% purifiedNeutral.Pow = 0;
-% 
-% for i= 1:50
-%     
-%     purifiedF0 = infoNeutral{i}.f0raw .* infoNeutral{i}.vuv;
-%     purifiedF0 = purifiedF0(purifiedF0 ~= 0);
-%     purifiedNeutral.F0 =  [ purifiedNeutral.F0; purifiedF0 ];
-%     
-%     [idx, purifiedTime] = time_calc(infoNeutral{i}.vuv);
-%     purifiedNeutral.Time = [purifiedNeutral.Time; purifiedTime];
-%     
-%     for j = 1:length(idx)
-%         purifiedPow = sum(infoNeutral{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
-%         purifiedNeutral.Pow = [purifiedNeutral.Pow; purifiedPow];
-%     end
-% end
-% 
-% purifiedNeutral.F0 = purifiedNeutral.F0(purifiedNeutral.F0 ~= 0);
-% purifiedNeutral.Time = purifiedNeutral.Time(purifiedNeutral.Time ~= 0);
-% purifiedNeutral.Pow = purifiedNeutral.Pow(purifiedNeutral.Pow ~= 0);
-% 
-% 
-% % Sad
-% purifiedSad.F0 = 0;
-% purifiedSad.Time = 0;
-% purifiedSad.Pow = 0;
-% 
-% for i= 1:50
-%     
-%     purifiedF0 = infoSad{i}.f0raw .* infoSad{i}.vuv;
-%     purifiedF0 = purifiedF0(purifiedF0 ~= 0);
-%     purifiedSad.F0 =  [ purifiedSad.F0; purifiedF0 ];
-%     
-%     [idx, purifiedTime] = time_calc(infoSad{i}.vuv);
-%     purifiedSad.Time = [purifiedSad.Time; purifiedTime];
-%     
-%     for j = 1:length(idx)
-%         purifiedPow = sum(infoSad{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
-%         purifiedSad.Pow = [purifiedSad.Pow; purifiedPow];
-%     end
-% end
-% 
-% purifiedSad.F0 = purifiedSad.F0(purifiedSad.F0 ~= 0);
-% purifiedSad.Time = purifiedSad.Time(purifiedSad.Time ~= 0);
-% purifiedSad.Pow = purifiedSad.Pow(purifiedSad.Pow ~= 0);
-% 
-% % save workspace for other use
-% save purifiedAngry.mat purifiedAngry
-% save purifiedSad.mat purifiedSad
-% save purifiedNeutral.mat purifiedNeutral
-% save purifiedHappy.mat purifiedHappy
-% 
+%% Training Serial Version
+% F0 time and power calculation
+% raw, still remain to be processed
+infoAngry = cell(50,1);
+infoHappy = cell(50,1);
+infoNeutral = cell(50,1);
+infoSad = cell(50,1);
+
+for i = 201:250
+    
+    % Angry information
+    fileAngryTemp = strcat(filePathAngry, int2str(i), '.wav');
+    [audioAngry, fs] = audioread(fileAngryTemp);
+    [f0raw, vuv, auxouts] = MulticueF0v14(audioAngry, fs, f0floor, f0ceil);
+    infoAngry{i-200}.f0raw = f0raw;
+    infoAngry{i-200}.vuv = vuv;
+    infoAngry{i-200}.pow = auxouts.InstantaneousPower;
+    
+    % Happy information
+    fileHappyTemp = strcat(filePathHappy, int2str(i), '.wav');
+    [audioHappy, fs] = audioread(fileHappyTemp);
+    [f0raw, vuv, auxouts] = MulticueF0v14(audioHappy, fs, f0floor, f0ceil);
+    infoHappy{i-200}.f0raw = f0raw;
+    infoHappy{i-200}.vuv = vuv;
+    infoHappy{i-200}.pow = auxouts.InstantaneousPower;
+    
+    % Neutral information
+    fileNeutralTemp = strcat(filePathNeutral, int2str(i), '.wav');
+    [audioNeutral, fs] = audioread(fileNeutralTemp);
+    [f0raw, vuv, auxouts] = MulticueF0v14(audioNeutral, fs, f0floor, f0ceil);
+    infoNeutral{i-200}.f0raw = f0raw;
+    infoNeutral{i-200}.vuv = vuv;
+    infoNeutral{i-200}.pow = auxouts.InstantaneousPower;
+    
+    % Sad information
+    fileSadTemp = strcat(filePathSad, int2str(i), '.wav');
+    [audioSad, fs] = audioread(fileSadTemp);
+    [f0raw, vuv, auxouts] = MulticueF0v14(audioSad, fs, f0floor, f0ceil);
+    infoSad{i-200}.f0raw = f0raw;
+    infoSad{i-200}.vuv = vuv;
+    infoSad{i-200}.pow = auxouts.InstantaneousPower;
+    
+end
+
+% save workspace for other use
+save infoAngry.mat infoAngry;
+save infoHappy.mat infoHappy;
+save infoNeutral.mat infoNeutral;
+save infoSad.mat infoSad;
+
+
+%% Training parallel version
+% F0 time and power calculation
+% raw, still remain to be processed
+infoAngry = cell(50,1);
+infoHappy = cell(50,1);
+infoNeutral = cell(50,1);
+infoSad = cell(50,1);
+
+parfor i = 201:250
+    
+    % Angry information
+    fileAngryTemp = strcat(filePathAngry, int2str(i), '.wav');
+    [audioAngry, fs] = audioread(fileAngryTemp);
+    [f0rawA, vuvA, auxoutsA] = MulticueF0v14(audioAngry, fs, f0floor, f0ceil);
+    infoAngry{i-200}.f0raw = f0rawA;
+    infoAngry{i-200}.vuv = vuvA;
+    infoAngry{i-200}.pow = auxoutsA.InstantaneousPower;
+    
+    % Happy information
+    fileHappyTemp = strcat(filePathHappy, int2str(i), '.wav');
+    [audioHappy, fs] = audioread(fileHappyTemp);
+    [f0rawH, vuvH, auxoutsH] = MulticueF0v14(audioHappy, fs, f0floor, f0ceil);
+    infoHappy{i-200}.f0raw = f0rawH;
+    infoHappy{i-200}.vuv = vuvH;
+    infoHappy{i-200}.pow = auxoutsH.InstantaneousPower;
+    
+    % Neutral information
+    fileNeutralTemp = strcat(filePathNeutral, int2str(i), '.wav');
+    [audioNeutral, fs] = audioread(fileNeutralTemp);
+    [f0rawN, vuvN, auxoutsN] = MulticueF0v14(audioNeutral, fs, f0floor, f0ceil);
+    infoNeutral{i-200}.f0raw = f0rawN;
+    infoNeutral{i-200}.vuv = vuvN;
+    infoNeutral{i-200}.pow = auxoutsN.InstantaneousPower;
+    
+    % Sad information
+    fileSadTemp = strcat(filePathSad, int2str(i), '.wav');
+    [audioSad, fs] = audioread(fileSadTemp);
+    [f0rawS, vuvS, auxoutsS] = MulticueF0v14(audioSad, fs, f0floor, f0ceil);
+    infoSad{i-200}.f0raw = f0rawS;
+    infoSad{i-200}.vuv = vuvS;
+    infoSad{i-200}.pow = auxoutsS.InstantaneousPower;
+    
+end
+
+% save workspace for other use
+save infoAngry_parallel.mat infoAngry;
+save infoHappy_parallel.mat infoHappy;
+save infoNeutral_parallel.mat infoNeutral;
+save infoSad_parallel.mat infoSad;
+
+
+
+%% data purifying
+% process data into desired ones
+
+% restore workspace
+clear;clc;
+load('infoAngry.mat');
+load('infoHappy.mat');
+load('infoNeutral.mat');
+load('infoSad.mat');
+
+
+% %% Unit Test
+% % DESCRIPTIVE TEXT
+% [idx, speechl] = time_calc(infoHappy{5}.vuv);
+
+% Angry
+purifiedAngry.F0 = 0;
+purifiedAngry.Time = 0;
+purifiedAngry.Pow = 0;
+
+for i= 1:50
+    
+    purifiedF0 = infoAngry{i}.f0raw .* infoAngry{i}.vuv;
+    purifiedF0 = purifiedF0(purifiedF0 ~= 0);
+    purifiedAngry.F0 =  [ purifiedAngry.F0; purifiedF0 ];
+    
+    [idx, purifiedTime] = time_calc(infoAngry{i}.vuv);
+    purifiedAngry.Time = [purifiedAngry.Time; purifiedTime];
+    
+    for j = 1:length(idx)
+        purifiedPow = sum(infoAngry{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
+        purifiedAngry.Pow = [purifiedAngry.Pow; purifiedPow];
+    end
+end
+
+purifiedAngry.F0 = purifiedAngry.F0(purifiedAngry.F0 ~= 0);
+purifiedAngry.Time = purifiedAngry.Time(purifiedAngry.Time ~= 0);
+purifiedAngry.Pow = purifiedAngry.Pow(purifiedAngry.Pow ~= 0);
+
+
+% Happy
+purifiedHappy.F0 = 0;
+purifiedHappy.Time = 0;
+purifiedHappy.Pow = 0;
+for i= 1:50
+    
+    purifiedF0 = infoHappy{i}.f0raw .* infoHappy{i}.vuv;
+    purifiedF0 = purifiedF0(purifiedF0 ~= 0);
+    purifiedHappy.F0 =  [ purifiedHappy.F0; purifiedF0 ];
+    
+    [idx, purifiedTime] = time_calc(infoHappy{i}.vuv);
+    purifiedHappy.Time = [purifiedHappy.Time; purifiedTime];
+    
+    for j = 1:length(idx)
+        purifiedPow = sum(infoHappy{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
+        purifiedHappy.Pow = [purifiedHappy.Pow; purifiedPow];
+    end
+end
+
+purifiedHappy.F0 = purifiedHappy.F0(purifiedHappy.F0 ~= 0);
+purifiedHappy.Time = purifiedHappy.Time(purifiedHappy.Time ~= 0);
+purifiedHappy.Pow = purifiedHappy.Pow(purifiedHappy.Pow ~= 0);
+
+
+% Neutral
+purifiedNeutral.F0 = 0;
+purifiedNeutral.Time = 0;
+purifiedNeutral.Pow = 0;
+
+for i= 1:50
+    
+    purifiedF0 = infoNeutral{i}.f0raw .* infoNeutral{i}.vuv;
+    purifiedF0 = purifiedF0(purifiedF0 ~= 0);
+    purifiedNeutral.F0 =  [ purifiedNeutral.F0; purifiedF0 ];
+    
+    [idx, purifiedTime] = time_calc(infoNeutral{i}.vuv);
+    purifiedNeutral.Time = [purifiedNeutral.Time; purifiedTime];
+    
+    for j = 1:length(idx)
+        purifiedPow = sum(infoNeutral{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
+        purifiedNeutral.Pow = [purifiedNeutral.Pow; purifiedPow];
+    end
+end
+
+purifiedNeutral.F0 = purifiedNeutral.F0(purifiedNeutral.F0 ~= 0);
+purifiedNeutral.Time = purifiedNeutral.Time(purifiedNeutral.Time ~= 0);
+purifiedNeutral.Pow = purifiedNeutral.Pow(purifiedNeutral.Pow ~= 0);
+
+
+% Sad
+purifiedSad.F0 = 0;
+purifiedSad.Time = 0;
+purifiedSad.Pow = 0;
+
+for i= 1:50
+    
+    purifiedF0 = infoSad{i}.f0raw .* infoSad{i}.vuv;
+    purifiedF0 = purifiedF0(purifiedF0 ~= 0);
+    purifiedSad.F0 =  [ purifiedSad.F0; purifiedF0 ];
+    
+    [idx, purifiedTime] = time_calc(infoSad{i}.vuv);
+    purifiedSad.Time = [purifiedSad.Time; purifiedTime];
+    
+    for j = 1:length(idx)
+        purifiedPow = sum(infoSad{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
+        purifiedSad.Pow = [purifiedSad.Pow; purifiedPow];
+    end
+end
+
+purifiedSad.F0 = purifiedSad.F0(purifiedSad.F0 ~= 0);
+purifiedSad.Time = purifiedSad.Time(purifiedSad.Time ~= 0);
+purifiedSad.Pow = purifiedSad.Pow(purifiedSad.Pow ~= 0);
+
+% save workspace for other use
+save purifiedAngry.mat purifiedAngry
+save purifiedSad.mat purifiedSad
+save purifiedNeutral.mat purifiedNeutral
+save purifiedHappy.mat purifiedHappy
+
 
 
 %% Plot
 % draw the distributions of each state
+clear;clc;
+
 load purifiedAngry.mat;
 load purifiedHappy.mat
 load purifiedNeutral.mat
@@ -478,98 +480,6 @@ hold off;
 hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
 set(hLegend,'Interpreter','none');
 % legend off;
-
-
-
-% % F0 distribution
-% figure;
-% 
-% % Neutral
-% subplot(2,2,1);
-% [histNeutral.F0.counts, histNeutral.F0.centers] = hist(purifiedNeutral.F0);
-% hist(purifiedNeutral.F0);
-% title('distribution of F0 of state Neutral');
-% 
-% % Neutral Gaussian fit
-% [fitNeutralResult.F0, ~, xTemp, yTemp] = GaussianFit(histNeutral.F0.centers, histNeutral.F0.counts);
-% histNeutral.F0.average = fitNeutralResult.F0.b1;
-% histNeutral.F0.deviation = sqrt(fitNeuralResult.F0.c1.^2 / 2);
-% 
-% hold on;
-% plot(fitNeutralResult.F0, xTemp, yTemp);
-% xlabel('base freqency / Hz');
-% ylabel('show time');
-% str = strcat('\mu : ', num2str(int64(histNeutral.F0.average)));
-% text(70, max(yTemp), str);
-% str = strcat('\sigma : ', num2str(int64(histNeutral.F0.deviation)));
-% text(70, max(yTemp) - 1000, str);
-% hold off;
-% 
-% 
-% % Angry
-% subplot(2,2,2);
-% [histAngry.F0.counts, histAngry.F0.centers] = hist(purifiedAngry.F0);
-% hist(purifiedAngry.F0);
-% title('distribution of F0 of state Angry');
-% 
-% % Angry Gaussian fit
-% [fitAngryResult.F0, ~, xTemp, yTemp] = GaussianFit(histAngry.F0.centers, histAngry.F0.counts);
-% histAngry.F0.average = fitAngryResult.F0.b1;
-% histAngry.F0.deviation = sqrt(fitAngryResult.F0.c1.^2 / 2);
-% 
-% hold on;
-% plot(fitAngryResult.F0, xTemp, yTemp);
-% xlabel('base freqency / Hz');
-% ylabel('show time');
-% str = strcat('\mu : ', num2str(int64(histAngry.F0.average)));
-% text(20, max(yTemp) + 1000, str);
-% str = strcat('\sigma : ', num2str(int64(histAngry.F0.deviation)));
-% text(20, max(yTemp), str);
-% hold off;
-% 
-% 
-% % Sad
-% subplot(2,2,3);
-% [histSad.F0.counts, histSad.F0.centers] = hist(purifiedSad.F0);
-% hist(purifiedSad.F0);
-% title('distribution of F0 of state Sad');
-% 
-% % Sad Gaussian fit
-% [fitSadResult.F0, ~, xTemp, yTemp] = GaussianFit(histSad.F0.centers, histSad.F0.counts);
-% histSad.F0.average = fitSadResult.F0.b1;
-% histSad.F0.deviation = sqrt(fitSadResult.F0.c1.^2 / 2);
-% 
-% hold on;
-% plot(fitSadResult.F0, xTemp, yTemp);
-% xlabel('base freqency / Hz');
-% ylabel('show time');
-% str = strcat('\mu : ', num2str(int64(histSad.F0.average)));
-% text(70, max(yTemp), str);
-% str = strcat('\sigma : ', num2str(int64(histSad.F0.deviation)));
-% text(70, max(yTemp) - 2000, str);
-% hold off;
-% 
-% 
-% % Happy
-% subplot(2,2,4);
-% [histHappy.F0.counts, histHappy.F0.centers] = hist(purifiedHappy.F0);
-% hist(purifiedHappy.F0);
-% title('distribution of F0 of state Happy');
-% 
-% % Happy Gaussian fit
-% [fitHappyResult.F0, ~, xTemp, yTemp] = GaussianFit(histHappy.F0.centers, histHappy.F0.counts);
-% histHappy.F0.average = fitHappyResult.F0.b1;
-% histHappy.F0.deviation = sqrt(fitHappyResult.F0.c1.^2 / 2);
-% 
-% hold on;
-% plot(fitHappyResult.F0, xTemp, yTemp);
-% xlabel('base freqency / Hz');
-% ylabel('show time');
-% str = strcat('\mu : ', num2str(int64(histHappy.F0.average)));
-% text(20, max(yTemp), str);
-% str = strcat('\sigma : ', num2str(int64(histHappy.F0.deviation)));
-% text(20, max(yTemp) - 1000, str);
-% hold off;
 
 
 
@@ -814,33 +724,6 @@ hold off;
 hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
 set(hLegend,'Interpreter','none');
 
-% subplot(2,2,2);
-% [histAngry.Time.counts, histAngry.Time.centers] = hist(purifiedAngry.Time);
-% hist(purifiedAngry.Time);
-% title('distribution of time of state Angry');
-% 
-% phat = gamfit(histAngry.Time.counts);
-% histAngry.Time.Shape = phat(1);
-% histAngry.Time.Scale = phat(2);
-% 
-% subplot(2,2,3);
-% [histSad.Time.counts, histSad.Time.centers] = hist(purifiedSad.Time);
-% hist(purifiedSad.Time);
-% title('distribution of time of state Sad');
-% 
-% phat = gamfit(histSad.Time.counts);
-% histSad.Time.Shape = phat(1);
-% histSad.Time.Scale = phat(2);
-% 
-% 
-% subplot(2,2,4);
-% [histHappy.Time.counts, histHappy.Time.centers] = hist(purifiedHappy.Time);
-% hist(purifiedHappy.Time);
-% title('distribution of time of state Happy');
-% 
-% phat = gamfit(histHappy.Time.counts);
-% histHappy.Time.Shape = phat(1);
-% histHappy.Time.Scale = phat(2);
 
 
 %% 
@@ -1020,7 +903,7 @@ set(hLegend,'Interpreter','none');
 
 
 subplot(2,2,4);
-title('distribution of pow of state Neutral');
+title('distribution of pow of state Happy');
 hold on;
 LegHandles = []; LegText = {};
 
