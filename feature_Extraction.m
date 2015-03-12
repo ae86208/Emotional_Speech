@@ -309,10 +309,10 @@ LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitNeutralF0';
 
 str1 = strcat('\mu :  ', num2str(histNeutral.F0.average));
-text(50, 5.5e-3, str1);
+text(50, 7e-3, str1);
 str2 = strcat('\sigma :  ', num2str(histNeutral.F0.deviation));
-text(50, 4.5e-3, str2);
-axis tight;
+text(50, 5e-3, str2);
+axis([0, 600, 0, 8e-3]);
 
 % Adjust figure
 box on;
@@ -369,7 +369,7 @@ str1 = strcat('\mu : ', num2str(histSad.F0.average));
 text(50, 7e-3, str1);
 str2 = strcat('\sigma : ', num2str(histSad.F0.deviation));
 text(50, 5e-3, str2);
-axis tight;
+axis([0, 600, 0, 8e-3]);
 
 % Adjust figure
 box on;
@@ -423,10 +423,10 @@ LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitAngryF0';
 
 str1 = strcat('\mu : ', num2str(histAngry.F0.average));
-text(50, 4e-3, str1);
+text(50, 7e-3, str1);
 str2 = strcat('\sigma : ', num2str(histAngry.F0.deviation));
-text(50, 3e-3, str2);
-axis tight;
+text(50, 5e-3, str2);
+axis([0, 600, 0, 8e-3]);
 
 % Adjust figure
 box on;
@@ -480,10 +480,10 @@ LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitHappyF0';
 
 str1 = strcat('\mu : ', num2str(histHappy.F0.average));
-text(50, 4e-3, str1);
+text(50, 7e-3, str1);
 str2 = strcat('\sigma : ', num2str(histHappy.F0.deviation));
-text(50, 3e-3, str2);
-axis tight;
+text(50, 5e-3, str2);
+axis([0, 600, 0, 8e-3]);
 
 % Adjust figure
 box on;
@@ -544,11 +544,11 @@ LegText{end+1} = 'fitNeutralTime';
 str1 = 'E(X): ';
 str2 = 'Var(X): '; 
 
-text(500, 4e-3, str1);
-text(500, 3.5e-3, num2str(histNeutral.Time.Shape * histNeutral.Time.Scale));
-text(500, 3e-3, str2);
-text(500, 2.5e-3, num2str(histNeutral.Time.Shape * histNeutral.Time.Scale .^ 2));
-axis tight;
+text(600, 4e-3, str1);
+text(600, 3.5e-3, num2str(histNeutral.Time.Shape * histNeutral.Time.Scale));
+text(600, 3e-3, str2);
+text(600, 2.5e-3, num2str(histNeutral.Time.Shape * histNeutral.Time.Scale .^ 2));
+axis([0, 800, 0, 6e-3]);
 % Adjust figure
 box on;
 hold off;
@@ -602,11 +602,11 @@ hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
 LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitSadTime';
 
-text(1250, 2.5e-3, str1);
-text(1250, 2e-3, num2str(histSad.Time.Shape * histSad.Time.Scale));
-text(1250, 1.5e-3, str2);
-text(1250, 1e-3, num2str(histSad.Time.Shape * histSad.Time.Scale .^ 2));
-axis tight;
+text(600, 4e-3, str1);
+text(600, 3.5e-3, num2str(histSad.Time.Shape * histSad.Time.Scale));
+text(600, 3e-3, str2);
+text(600, 2.5e-3, num2str(histSad.Time.Shape * histSad.Time.Scale .^ 2));
+axis([0, 800, 0, 6e-3]);
 % Adjust figure
 box on;
 hold off;
@@ -657,11 +657,11 @@ hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
 LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitAngryTime';
 
-text(800, 3.5e-3, str1);
-text(800, 3e-3, num2str(histAngry.Time.Shape * histAngry.Time.Scale));
-text(800, 2.5e-3, str2);
-text(800, 2e-3, num2str(histAngry.Time.Shape * histAngry.Time.Scale .^ 2));
-axis tight;
+text(600, 4e-3, str1);
+text(600, 3.5e-3, num2str(histAngry.Time.Shape * histAngry.Time.Scale));
+text(600, 3e-3, str2);
+text(600, 2.5e-3, num2str(histAngry.Time.Shape * histAngry.Time.Scale .^ 2));
+axis([0, 800, 0, 6e-3]);
 % Adjust figure
 box on;
 hold off;
@@ -712,11 +712,11 @@ hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
 LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitHappyTime';
 
-text(800, 3e-3, str1);
-text(800, 2.5e-3, num2str(histHappy.Time.Shape * histHappy.Time.Scale));
-text(800, 2e-3, str2);
-text(800, 1.5e-3, num2str(histHappy.Time.Shape * histHappy.Time.Scale .^ 2));
-axis tight;
+text(600, 4e-3, str1);
+text(600, 3.5e-3, num2str(histHappy.Time.Shape * histHappy.Time.Scale));
+text(600, 3e-3, str2);
+text(600, 2.5e-3, num2str(histHappy.Time.Shape * histHappy.Time.Scale .^ 2));
+axis([0, 800, 0, 6e-3]);
 % Adjust figure
 box on;
 hold off;
@@ -731,6 +731,12 @@ set(hLegend,'Interpreter','none');
 %============================================================================================================================%
 % distribution of Pow
 figure;
+
+% Preprocessing ¡ª¡ª add 50dB amp for each group
+purifiedNeutral.Pow = amp50dB(purifiedNeutral.Pow);
+purifiedSad.Pow = amp50dB(purifiedSad.Pow);
+purifiedAngry.Pow = amp50dB(purifiedAngry.Pow);
+purifiedHappy.Pow = amp50dB(purifiedHappy.Pow);
 
 
 % Pow of Neutral
@@ -774,9 +780,9 @@ LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitNeutralPow';
 
 str1 = strcat('\mu : ', num2str(histNeutral.Pow.average));
-text(-40, 0.1, str1);
+text(10, 0.1, str1);
 str2 = strcat('\sigma : ', num2str(histNeutral.Pow.deviation));
-text(-40, 0.08, str2);
+text(10, 0.08, str2);
 axis tight;
 
 % Adjust figure
@@ -831,9 +837,9 @@ LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitSadPow';
 
 str1 = strcat('\mu : ', num2str(histSad.Pow.average));
-text(-40, 0.1, str1);
+text(10, 0.1, str1);
 str2 = strcat('\sigma : ', num2str(histSad.Pow.deviation));
-text(-40, 0.08, str2);
+text(10, 0.08, str2);
 axis tight;
 
 % Adjust figure
@@ -888,9 +894,9 @@ LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitAngryPow';
 
 str1 = strcat('\mu : ', num2str(histAngry.Pow.average));
-text(-40, 0.1, str1);
+text(10, 0.1, str1);
 str2 = strcat('\sigma : ', num2str(histAngry.Pow.deviation));
-text(-40, 0.08, str2);
+text(10, 0.08, str2);
 axis tight;
 
 % Adjust figure
@@ -945,9 +951,9 @@ LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitHappyPow';
 
 str1 = strcat('\mu : ', num2str(histHappy.Pow.average));
-text(-40, 0.1, str1);
+text(10, 0.1, str1);
 str2 = strcat('\sigma : ', num2str(histHappy.Pow.deviation));
-text(-40, 0.08, str2);
+text(10, 0.08, str2);
 axis tight;
 
 % Adjust figure
