@@ -16,8 +16,8 @@ global f0floor f0ceil fs framem shiftm f0shiftm ...
 	  f0ceil=500;  % Upper limit of F0 search range
 	  fs=16000;	% sampling frequency (Hz)
 	  framem=40;	% default frame length limit for pitch extraction (ms)
-	  shiftm=20;       % default frame shift (ms) for spectrogram
-	  f0shiftm=20;     % default frame shift (ms) for F0 information
+	  shiftm=1;       % default frame shift (ms) for spectrogram
+	  f0shiftm=1;     % default frame shift (ms) for F0 information
 	  fftl=1024;	% default FFT length
 	  eta=1.4;        % time window stretch factor
 	  pc=0.6;         % exponent for nonlinearity
