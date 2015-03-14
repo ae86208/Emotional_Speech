@@ -735,11 +735,12 @@ set(hLegend,'Interpreter','none');
 % distribution of Pow
 figure;
 
-% Preprocessing ！！ add 50dB amp for each group
-purifiedNeutral.Pow = amp50dB(purifiedNeutral.Pow);
-purifiedSad.Pow = amp50dB(purifiedSad.Pow);
-purifiedAngry.Pow = amp50dB(purifiedAngry.Pow);
-purifiedHappy.Pow = amp50dB(purifiedHappy.Pow);
+% Preprocessing ！！ add 32dB amp for each group due to compensation of
+% instantaneous power threshold in defaultparams.m -- line 36
+purifiedNeutral.Pow = ampxdB(purifiedNeutral.Pow, 40);
+purifiedSad.Pow = ampxdB(purifiedSad.Pow, 40);
+purifiedAngry.Pow = ampxdB(purifiedAngry.Pow, 40);
+purifiedHappy.Pow = ampxdB(purifiedHappy.Pow, 40);
 
 
 % Pow of Neutral
@@ -783,9 +784,9 @@ LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitNeutralPow';
 
 str1 = strcat('\mu : ', num2str(histNeutral.Pow.average));
-text(10, 0.1, str1);
+text(0, 0.1, str1);
 str2 = strcat('\sigma : ', num2str(histNeutral.Pow.deviation));
-text(10, 0.08, str2);
+text(0, 0.08, str2);
 axis tight;
 
 % Adjust figure
@@ -840,9 +841,9 @@ LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitSadPow';
 
 str1 = strcat('\mu : ', num2str(histSad.Pow.average));
-text(10, 0.1, str1);
+text(0, 0.1, str1);
 str2 = strcat('\sigma : ', num2str(histSad.Pow.deviation));
-text(10, 0.08, str2);
+text(0, 0.08, str2);
 axis tight;
 
 % Adjust figure
@@ -897,9 +898,9 @@ LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitAngryPow';
 
 str1 = strcat('\mu : ', num2str(histAngry.Pow.average));
-text(10, 0.1, str1);
+text(0, 0.1, str1);
 str2 = strcat('\sigma : ', num2str(histAngry.Pow.deviation));
-text(10, 0.08, str2);
+text(0, 0.08, str2);
 axis tight;
 
 % Adjust figure
@@ -954,9 +955,9 @@ LegHandles(end+1) = hLine;
 LegText{end+1} = 'fitHappyPow';
 
 str1 = strcat('\mu : ', num2str(histHappy.Pow.average));
-text(10, 0.1, str1);
+text(0, 0.1, str1);
 str2 = strcat('\sigma : ', num2str(histHappy.Pow.deviation));
-text(10, 0.08, str2);
+text(0, 0.08, str2);
 axis tight;
 
 % Adjust figure
