@@ -1,7 +1,7 @@
 function [ basefreq ] = W_AMDF1( X, fs )
 %UNTITLED4 此处显示有关此函数的摘要
 %   此处显示详细说明
-N=fix(fs*0.015);%帧长
+N=fix(fs*0.016);%帧长
 L=length(X);%原信号共有多少点
 frameN=fix(L/N); %原信号共有多少帧
 
@@ -146,17 +146,18 @@ end
 %%%%%%%%%%%%%%%%%%%%
 sto(1:100)=0;
 Fn(1:frameN)=0;
-Xnk(1:2*N)=0;
+Xnk(1:N)=0;
 for i=1:cnt-1
     for j=1:(back(i)-Flag1(i))
         sto(1:100)=0;
-        Xnk(1:2 * N)=X(Flag1(i)*N+1+j*N:Flag1(i)*N+2 * N+j*N);
+        Xnk(1: N)=X(Flag1(i)*N+1+j*N:Flag1(i)*N+ N+j*N);
+        Xnk = Xnk .* hamming(N)';
         count=3;
         %求信号的AMDF
         Fn(1:N)=0;
-        for k=1:N
+        for k=1:N/2
             Fn(k)=0;
-            for m=1:N
+            for m=1:N/2
                 Fn(k)=Fn(k)+abs(Xnk(m)-Xnk(m+k-1));
             end
 %             Fn(k) = Fn(k) / (N - k - 1);
@@ -169,7 +170,7 @@ for i=1:cnt-1
                 count=count+1;
             end
         end
-        basefreq(Flag1(i)+j)=1.0/abs(sto(count-1)-sto(count-2))*fs;
+        basefreq(Flag1(i)+j)=fs/abs(sto(count-1)-sto(count-2));
     end
 end
 
@@ -183,7 +184,7 @@ for i=2:frameN
         basefreq(i)=0;
     end
     % 修正倍频点
-    if (basefreq(i) > 450)
+    if (basefreq(i) > 600)
         basefreq(i) = basefreq(i) / 2;
     end
 end
