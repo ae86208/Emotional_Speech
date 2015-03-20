@@ -1,4 +1,4 @@
-function [ basefreq ] = W_AMDF1( X, fs )
+function [ basefreq ] = selfCorrelation( X, fs )
 %UNTITLED4 此处显示有关此函数的摘要
 %   此处显示详细说明
 N=fix(fs*0.015);%帧长
@@ -145,7 +145,6 @@ end
 %%基音频率计算
 %%%%%%%%%%%%%%%%%%%%
 sto(1:100)=0;
-Fn = 0;
 Xnk(1:N)=0;
 for i=1:cnt-1
     for j=1:(back(i)-Flag1(i))
@@ -154,18 +153,18 @@ for i=1:cnt-1
 %         Xnk = Xnk .* hamming(N)';
         count=3;
         %求信号的AMDF
-        Fn(1:N)=0;
+        Rn = [];
         for k=1:N/2
-            Fn(k)=0;
+            Rn(k)=0;
             for m=1:N/2
-                Fn(k)=Fn(k)+abs(Xnk(m)-Xnk(m+k-1));
+                Rn(k) = Rn(k) + Xnk(m) * Xnk(m + k - 1);
             end
 %             Fn(k) = Fn(k) / (N - k - 1);
         end
 %         Fn = Fn.^2;
-        AMDF_MAX=max(Fn);
-        for k=2:N-1
-            if(Fn(k)<Fn(k-1) && Fn(k)<Fn(k+1) &&Fn(k)<0.5*AMDF_MAX)  % &&Fn(k)<0.5*AMDF_MAX
+        RN_MAX=max(Rn);
+        for k=2 : N/2 -1
+            if(Rn(k) > Rn(k-1) && Rn(k) > Rn(k+1) && Rn(k) > 0.5*RN_MAX)  % &&Fn(k)<0.5*AMDF_MAX
                 sto(count)=k;
                 count=count+1;
             end
@@ -193,4 +192,6 @@ end
 basefreq = basefreq(basefreq ~= 0);
 
 end
+
+
 

@@ -152,9 +152,9 @@ load('infoSad.mat');
 % [idx, speechl] = time_calc(infoHappy{5}.vuv);
 
 % Angry
-purifiedAngry.F0 = 0;
-purifiedAngry.Time = 0;
-purifiedAngry.Pow = 0;
+purifiedAngry.F0 = [];
+purifiedAngry.Time = [];
+purifiedAngry.Pow = [];
 
 for i= 1:50
     
@@ -171,15 +171,12 @@ for i= 1:50
     end
 end
 
-purifiedAngry.F0 = purifiedAngry.F0(purifiedAngry.F0 ~= 0);
-purifiedAngry.Time = purifiedAngry.Time(purifiedAngry.Time ~= 0);
-purifiedAngry.Pow = purifiedAngry.Pow(purifiedAngry.Pow ~= 0);
 
 
 % Happy
-purifiedHappy.F0 = 0;
-purifiedHappy.Time = 0;
-purifiedHappy.Pow = 0;
+purifiedHappy.F0 = [];
+purifiedHappy.Time = [];
+purifiedHappy.Pow = [];
 for i= 1:50
     
     purifiedF0 = infoHappy{i}.f0raw .* infoHappy{i}.vuv;
@@ -195,15 +192,12 @@ for i= 1:50
     end
 end
 
-purifiedHappy.F0 = purifiedHappy.F0(purifiedHappy.F0 ~= 0);
-purifiedHappy.Time = purifiedHappy.Time(purifiedHappy.Time ~= 0);
-purifiedHappy.Pow = purifiedHappy.Pow(purifiedHappy.Pow ~= 0);
 
 
 % Neutral
-purifiedNeutral.F0 = 0;
-purifiedNeutral.Time = 0;
-purifiedNeutral.Pow = 0;
+purifiedNeutral.F0 = [];
+purifiedNeutral.Time = [];
+purifiedNeutral.Pow = [];
 
 for i= 1:50
     
@@ -220,15 +214,12 @@ for i= 1:50
     end
 end
 
-purifiedNeutral.F0 = purifiedNeutral.F0(purifiedNeutral.F0 ~= 0);
-purifiedNeutral.Time = purifiedNeutral.Time(purifiedNeutral.Time ~= 0);
-purifiedNeutral.Pow = purifiedNeutral.Pow(purifiedNeutral.Pow ~= 0);
 
 
 % Sad
-purifiedSad.F0 = 0;
-purifiedSad.Time = 0;
-purifiedSad.Pow = 0;
+purifiedSad.F0 = [];
+purifiedSad.Time = [];
+purifiedSad.Pow = [];
 
 for i= 1:50
     
@@ -245,9 +236,6 @@ for i= 1:50
     end
 end
 
-purifiedSad.F0 = purifiedSad.F0(purifiedSad.F0 ~= 0);
-purifiedSad.Time = purifiedSad.Time(purifiedSad.Time ~= 0);
-purifiedSad.Pow = purifiedSad.Pow(purifiedSad.Pow ~= 0);
 
 % save workspace for other use
 save purifiedAngry.mat purifiedAngry
@@ -273,7 +261,7 @@ figure;
 
 % F0 of Neutral
 subplot(2,2,1);
-title('distribution of F0 of state Neutral');
+title('distribution of F0 of state Neutral with STRAIGHT');
 hold on;
 LegHandles = []; LegText = {};
 
@@ -330,7 +318,7 @@ set(hLegend,'Interpreter','none');
 
 % F0 of Sad
 subplot(2,2,3);
-title('distribution of F0 of state Sad');
+title('distribution of F0 of state Sad with STRAIGHT');
 hold on;
 LegHandles = []; LegText = {};
 
@@ -387,7 +375,7 @@ set(hLegend,'Interpreter','none');
 
 % F0 of Angry
 subplot(2,2,2);
-title('distribution of F0 of state Angry');
+title('distribution of F0 of state Angry with STRAIGHT');
 hold on;
 LegHandles = []; LegText = {};
 
@@ -444,7 +432,7 @@ set(hLegend,'Interpreter','none');
 
 % F0 of Happy
 subplot(2,2,4);
-title('distribution of F0 of state Happy');
+title('distribution of F0 of state Happy with STRAIGHT');
 hold on;
 LegHandles = []; LegText = {};
 
