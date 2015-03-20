@@ -18,7 +18,7 @@ amdfNeutralBase_freq = 0;
 amdfAngryBase_freq = 0;
 amdfHappyBase_freq = 0;
 
-for k = 201:230
+for k = 201:250
     % Sad
     fileSadTemp = strcat(filePathSad, num2str(k), '.wav');
     [stream, fs] = audioread(fileSadTemp);

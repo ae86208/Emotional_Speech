@@ -18,7 +18,7 @@ selfCorrelationNeutralBase_freq = [];
 selfCorrelationAngryBase_freq = [];
 selfCorrelationHappyBase_freq = [];
 
-for k = 201:230
+for k = 201:250
     % Sad
     fileSadTemp = strcat(filePathSad, num2str(k), '.wav');
     [stream, fs] = audioread(fileSadTemp);

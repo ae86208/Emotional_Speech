@@ -123,7 +123,11 @@ for key=1:key1-1
         num=num+1;
     end
     while(~(crosszero(num-1)>crosszero(num)&&crosszero(num)<crosszero(num+1)))
-        num=num+1;
+        if num + 1 < length(crosszero)
+            num=num+1;
+        else
+            break;
+        end
     end
     Flag(key)=num;
 end
