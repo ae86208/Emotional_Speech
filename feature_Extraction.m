@@ -96,7 +96,7 @@ parfor i = 201:250
     
     % Angry information
     fileAngryTemp = strcat(filePathAngry, int2str(i), '.wav');
-    [audioAngry, fs] = AdaptedAudioread(fileAngryTemp, ver_chk);
+    [audioAngry, fs] = audioread(fileAngryTemp);
     [f0rawA, vuvA, auxoutsA] = MulticueF0v14(audioAngry, fs, f0floor, f0ceil);
     infoAngry{i-200}.f0raw = f0rawA;
     infoAngry{i-200}.vuv = vuvA;
@@ -104,7 +104,7 @@ parfor i = 201:250
     
     % Happy information
     fileHappyTemp = strcat(filePathHappy, int2str(i), '.wav');
-    [audioHappy, fs] = AdaptedAudioread(fileHappyTemp, ver_chk);
+    [audioHappy, fs] = audioread(fileHappyTemp);
     [f0rawH, vuvH, auxoutsH] = MulticueF0v14(audioHappy, fs, f0floor, f0ceil);
     infoHappy{i-200}.f0raw = f0rawH;
     infoHappy{i-200}.vuv = vuvH;
@@ -112,7 +112,7 @@ parfor i = 201:250
     
     % Neutral information
     fileNeutralTemp = strcat(filePathNeutral, int2str(i), '.wav');
-    [audioNeutral, fs] = AdaptedAudioread(fileNeutralTemp, ver_chk);
+    [audioNeutral, fs] = audioread(fileNeutralTemp);
     [f0rawN, vuvN, auxoutsN] = MulticueF0v14(audioNeutral, fs, f0floor, f0ceil);
     infoNeutral{i-200}.f0raw = f0rawN;
     infoNeutral{i-200}.vuv = vuvN;
@@ -120,7 +120,7 @@ parfor i = 201:250
     
     % Sad information
     fileSadTemp = strcat(filePathSad, int2str(i), '.wav');
-    [audioSad, fs] = AdaptedAudioread(fileSadTemp, ver_chk);
+    [audioSad, fs] = audioread(fileSadTemp);
     [f0rawS, vuvS, auxoutsS] = MulticueF0v14(audioSad, fs, f0floor, f0ceil);
     infoSad{i-200}.f0raw = f0rawS;
     infoSad{i-200}.vuv = vuvS;
@@ -162,7 +162,7 @@ for i= 1:50
     purifiedF0 = purifiedF0(purifiedF0 ~= 0);
     purifiedAngry.F0 =  [ purifiedAngry.F0; purifiedF0 ];
     
-    [idx, purifiedTime] = time_calc(infoAngry{i}.vuv);
+    [idx, purifiedTime,~] = time_calc(infoAngry{i}.vuv);
     purifiedAngry.Time = [purifiedAngry.Time; purifiedTime];
     
     for j = 1:length(idx)
@@ -183,7 +183,7 @@ for i= 1:50
     purifiedF0 = purifiedF0(purifiedF0 ~= 0);
     purifiedHappy.F0 =  [ purifiedHappy.F0; purifiedF0 ];
     
-    [idx, purifiedTime] = time_calc(infoHappy{i}.vuv);
+    [idx, purifiedTime,~] = time_calc(infoHappy{i}.vuv);
     purifiedHappy.Time = [purifiedHappy.Time; purifiedTime];
     
     for j = 1:length(idx)
@@ -205,7 +205,7 @@ for i= 1:50
     purifiedF0 = purifiedF0(purifiedF0 ~= 0);
     purifiedNeutral.F0 =  [ purifiedNeutral.F0; purifiedF0 ];
     
-    [idx, purifiedTime] = time_calc(infoNeutral{i}.vuv);
+    [idx, purifiedTime, ~] = time_calc(infoNeutral{i}.vuv);
     purifiedNeutral.Time = [purifiedNeutral.Time; purifiedTime];
     
     for j = 1:length(idx)
@@ -227,7 +227,7 @@ for i= 1:50
     purifiedF0 = purifiedF0(purifiedF0 ~= 0);
     purifiedSad.F0 =  [ purifiedSad.F0; purifiedF0 ];
     
-    [idx, purifiedTime] = time_calc(infoSad{i}.vuv);
+    [idx, purifiedTime, ~] = time_calc(infoSad{i}.vuv);
     purifiedSad.Time = [purifiedSad.Time; purifiedTime];
     
     for j = 1:length(idx)

@@ -1,4 +1,4 @@
-function [ idx, speechl ] = time_calc( stream )
+function [ idx, speechl, cnt ] = time_calc( stream )
 % time_calc return the time occurance index and last length
 %   occurance with shift from 0 to 1 and end with shift from 1 to 0
 
