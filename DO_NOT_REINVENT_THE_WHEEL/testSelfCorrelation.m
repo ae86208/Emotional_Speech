@@ -59,7 +59,7 @@ load selfCorrelationNeutralBase_freq.mat;
 figure;
 
 subplot(2,2,3);
-title('distribution of F0 of state Sad with SelfCorrelation');
+title('distribution of F0 of state Sad with ACF');
 hold on;
 LegHandles = []; LegText = {};
 
@@ -117,9 +117,9 @@ set(hLegend,'Interpreter','none');
 
 
 
-% F0 of Neutral with SelfCorrelation
+% F0 of Neutral with ACF
 subplot(2,2,1);
-title('distribution of F0 of state Neutral with SelfCorrelation');
+title('distribution of F0 of state Neutral with ACF');
 hold on;
 LegHandles = []; LegText = {};
 
@@ -176,7 +176,7 @@ set(hLegend,'Interpreter','none');
 
 
 subplot(2,2,2);
-title('distribution of F0 of state Angry with SelfCorrelation');
+title('distribution of F0 of state Angry with ACF');
 hold on;
 LegHandles = []; LegText = {};
 
@@ -234,9 +234,9 @@ set(hLegend,'Interpreter','none');
 
 
 
-% F0 of Neutral with SelfCorrelation
+% F0 of Neutral with ACF
 subplot(2,2,4);
-title('distribution of F0 of state Happy with SelfCorrelation');
+title('distribution of F0 of state Happy with ACF');
 hold on;
 LegHandles = []; LegText = {};
 

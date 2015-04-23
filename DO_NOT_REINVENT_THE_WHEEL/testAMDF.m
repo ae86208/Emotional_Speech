@@ -13,10 +13,10 @@ addpath(filePathAngry, filePathHappy, filePathNeutral, filePathSad);
 
 
 %% 
-amdfSadBase_freq = 0;
-amdfNeutralBase_freq = 0;
-amdfAngryBase_freq = 0;
-amdfHappyBase_freq = 0;
+amdfSadBase_freq = [];
+amdfNeutralBase_freq = [];
+amdfAngryBase_freq = [];
+amdfHappyBase_freq = [];
 
 for k = 201:250
     % Sad
@@ -39,11 +39,6 @@ for k = 201:250
     [stream, fs] = audioread(fileHappyTemp);
     amdfHappyBase_freq = [amdfHappyBase_freq W_AMDF1(stream, fs)];
 end
-
-amdfSadBase_freq = amdfSadBase_freq(amdfSadBase_freq ~= 0);
-amdfNeutralBase_freq = amdfNeutralBase_freq(amdfNeutralBase_freq ~= 0);
-amdfAngryBase_freq = amdfAngryBase_freq(amdfAngryBase_freq ~= 0);
-amdfHappyBase_freq = amdfHappyBase_freq(amdfHappyBase_freq ~= 0);
 
 save amdfSadBase_freq.mat amdfSadBase_freq;
 save amdfNeutralBase_freq.mat amdfNeutralBase_freq;
