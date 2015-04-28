@@ -1,12 +1,8 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Emotional Speech Analysis Thesis Project
-% Copyright ? jhdu @ Information Engineering department,
+%% Emotional Speech Analysis Thesis Project
+% Copyright jhdu @ Information Engineering department,
 % School of Electronics and Information Engineering, 
 % Soochow University.
 % All rights reserved.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
@@ -146,10 +142,6 @@ load('infoHappy.mat');
 load('infoNeutral.mat');
 load('infoSad.mat');
 
-
-% %% Unit Test
-% % DESCRIPTIVE TEXT
-% [idx, speechl] = time_calc(infoHappy{5}.vuv);
 
 % Angry
 purifiedAngry.F0 = [];
@@ -956,5 +948,3 @@ hold off;
 hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
 set(hLegend,'Interpreter','none');
 % legend off;
-
-
