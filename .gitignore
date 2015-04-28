@@ -18,5 +18,5 @@ slprj/
 
 W_AMDF.m
 
-*.html
+# *.html
 201*.mat

@@ -1,0 +1,2114 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Emotional Speech Analysis Thesis Project</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-04-24"><meta name="DC.source" content="feature_Extraction.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Emotional Speech Analysis Thesis Project</h1><!--introduction--><p>Copyright jhdu @ Information Engineering department, School of Electronics and Information Engineering, Soochow University. All rights reserved.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">File path set and initialization</a></li><li><a href="#2">Training Serial Version</a></li><li><a href="#3">Training parallel version</a></li><li><a href="#4">data purifying</a></li><li><a href="#5">Plot</a></li></ul></div><h2>File path set and initialization<a name="1"></a></h2><p>designate the destination of the path of training set</p><pre class="codeinput">clear;clc;
+
+filePath = <span class="string">'F:\Working_stuff\&#27605;&#35774;\&#24773;&#24863;&#35821;&#38899;\&#24773;&#24863;&#35821;&#38899;'</span>;
+
+filePathAngry = strcat(filePath, <span class="string">'\&#29983;&#27668;\'</span>);
+filePathHappy = strcat(filePath, <span class="string">'\&#39640;&#20852;\'</span>);
+filePathNeutral = strcat(filePath, <span class="string">'\&#20013;&#24615;\'</span>);
+filePathSad = strcat(filePath, <span class="string">'\&#24754;&#20260;\'</span>);
+
+addpath(filePathAngry, filePathHappy, filePathNeutral, filePathSad);
+
+<span class="comment">% parameter settings for feature extration</span>
+defaultparams;
+f0floor = 50;
+f0ceil = 500;
+
+<span class="comment">% version check</span>
+ver_chk = version;
+ver_chk = str2double(ver_chk(1:3));
+</pre><h2>Training Serial Version<a name="2"></a></h2><p>F0 time and power calculation raw, still remain to be processed</p><pre class="codeinput">infoAngry = cell(50,1);
+infoHappy = cell(50,1);
+infoNeutral = cell(50,1);
+infoSad = cell(50,1);
+
+<span class="keyword">for</span> i = 201:250
+
+    <span class="comment">% Angry information</span>
+    fileAngryTemp = strcat(filePathAngry, int2str(i), <span class="string">'.wav'</span>);
+    [audioAngry, fs] = audioread(fileAngryTemp);
+    [f0raw, vuv, auxouts] = MulticueF0v14(audioAngry, fs, f0floor, f0ceil);
+    infoAngry{i-200}.f0raw = f0raw;
+    infoAngry{i-200}.vuv = vuv;
+    infoAngry{i-200}.pow = auxouts.InstantaneousPower;
+
+    <span class="comment">% Happy information</span>
+    fileHappyTemp = strcat(filePathHappy, int2str(i), <span class="string">'.wav'</span>);
+    [audioHappy, fs] = audioread(fileHappyTemp);
+    [f0raw, vuv, auxouts] = MulticueF0v14(audioHappy, fs, f0floor, f0ceil);
+    infoHappy{i-200}.f0raw = f0raw;
+    infoHappy{i-200}.vuv = vuv;
+    infoHappy{i-200}.pow = auxouts.InstantaneousPower;
+
+    <span class="comment">% Neutral information</span>
+    fileNeutralTemp = strcat(filePathNeutral, int2str(i), <span class="string">'.wav'</span>);
+    [audioNeutral, fs] = audioread(fileNeutralTemp);
+    [f0raw, vuv, auxouts] = MulticueF0v14(audioNeutral, fs, f0floor, f0ceil);
+    infoNeutral{i-200}.f0raw = f0raw;
+    infoNeutral{i-200}.vuv = vuv;
+    infoNeutral{i-200}.pow = auxouts.InstantaneousPower;
+
+    <span class="comment">% Sad information</span>
+    fileSadTemp = strcat(filePathSad, int2str(i), <span class="string">'.wav'</span>);
+    [audioSad, fs] = audioread(fileSadTemp);
+    [f0raw, vuv, auxouts] = MulticueF0v14(audioSad, fs, f0floor, f0ceil);
+    infoSad{i-200}.f0raw = f0raw;
+    infoSad{i-200}.vuv = vuv;
+    infoSad{i-200}.pow = auxouts.InstantaneousPower;
+
+<span class="keyword">end</span>
+
+<span class="comment">% save workspace for other use</span>
+save <span class="string">infoAngry.mat</span> <span class="string">infoAngry</span>;
+save <span class="string">infoHappy.mat</span> <span class="string">infoHappy</span>;
+save <span class="string">infoNeutral.mat</span> <span class="string">infoNeutral</span>;
+save <span class="string">infoSad.mat</span> <span class="string">infoSad</span>;
+</pre><pre class="codeoutput">Missing dominant segment that is centered at:1016 (ms)
+segment (997:1042) is isolated.
+Missing dominant segment that is centered at:479 (ms)
+segment (460:512) is isolated.
+Missing dominant segment that is centered at:1253 (ms)
+segment (1240:1264) is isolated.
+Missing dominant segment that is centered at:1025 (ms)
+segment (1006:1041) is isolated.
+Missing dominant segment that is centered at:1592 (ms)
+segment (1569:1605) is isolated.
+Missing dominant segment that is centered at:369 (ms)
+segment (339:384) is isolated.
+Missing dominant segment that is centered at:167 (ms)
+segment (141:199) is isolated.
+Missing dominant segment that is centered at:951 (ms)
+segment (928:967) is isolated.
+Missing dominant segment that is centered at:566 (ms)
+segment (540:592) is isolated.
+Missing dominant segment that is centered at:815 (ms)
+segment (779:855) is isolated.
+Missing dominant segment that is centered at:856 (ms)
+segment (826:871) is isolated.
+Missing dominant segment that is centered at:224 (ms)
+segment (192:279) is isolated.
+Missing dominant segment that is centered at:1291 (ms)
+segment (1267:1327) is isolated.
+Missing dominant segment that is centered at:1172 (ms)
+segment (1148:1213) is isolated.
+Missing dominant segment that is centered at:831 (ms)
+segment (797:840) is isolated.
+Discontinuity in (429:495), Max jump=0.7889273 oct.
+Missing dominant segment that is centered at:467 (ms)
+segment (451:475) is isolated.
+Missing dominant segment that is centered at:395 (ms)
+segment (368:460) is isolated.
+Missing dominant segment that is centered at:1238 (ms)
+segment (1235:1284) is isolated.
+Missing dominant segment that is centered at:544 (ms)
+segment (519:584) is isolated.
+Missing dominant segment that is centered at:1171 (ms)
+segment (1149:1203) is isolated.
+Missing dominant segment that is centered at:1074 (ms)
+segment (1063:1086) is isolated.
+Missing dominant segment that is centered at:546 (ms)
+segment (515:596) is isolated.
+Missing dominant segment that is centered at:1240 (ms)
+segment (1191:1256) is isolated.
+Missing dominant segment that is centered at:459 (ms)
+segment (432:482) is isolated.
+Missing dominant segment that is centered at:245 (ms)
+segment (207:297) is isolated.
+Missing dominant segment that is centered at:671 (ms)
+segment (645:714) is isolated.
+Missing dominant segment that is centered at:601 (ms)
+segment (597:617) is isolated.
+Missing dominant segment that is centered at:1079 (ms)
+segment (1047:1152) is isolated.
+Discontinuity in (1021:1161), Max jump=2.750036 oct.
+Missing dominant segment that is centered at:619 (ms)
+segment (597:654) is isolated.
+Missing dominant segment that is centered at:1219 (ms)
+segment (1206:1231) is isolated.
+Missing dominant segment that is centered at:1035 (ms)
+segment (1019:1040) is isolated.
+Missing dominant segment that is centered at:590 (ms)
+segment (568:621) is isolated.
+Missing dominant segment that is centered at:1931 (ms)
+segment (1903:1967) is isolated.
+Missing dominant segment that is centered at:361 (ms)
+segment (326:384) is isolated.
+Missing dominant segment that is centered at:115 (ms)
+segment (89:133) is isolated.
+Missing dominant segment that is centered at:216 (ms)
+segment (186:259) is isolated.
+Missing dominant segment that is centered at:1278 (ms)
+segment (1255:1324) is isolated.
+Missing dominant segment that is centered at:1986 (ms)
+segment (1912:2049) is isolated.
+Missing dominant segment that is centered at:812 (ms)
+segment (778:828) is isolated.
+Missing dominant segment that is centered at:1077 (ms)
+segment (1050:1122) is isolated.
+Missing dominant segment that is centered at:1839 (ms)
+segment (1810:1880) is isolated.
+Missing dominant segment that is centered at:1145 (ms)
+segment (1103:1223) is isolated.
+</pre><h2>Training parallel version<a name="3"></a></h2><p>F0 time and power calculation raw, still remain to be processed</p><pre class="codeinput">infoAngry = cell(50,1);
+infoHappy = cell(50,1);
+infoNeutral = cell(50,1);
+infoSad = cell(50,1);
+
+<span class="keyword">parfor</span> i = 201:250
+
+    <span class="comment">% Angry information</span>
+    fileAngryTemp = strcat(filePathAngry, int2str(i), <span class="string">'.wav'</span>);
+    [audioAngry, fs] = audioread(fileAngryTemp);
+    [f0rawA, vuvA, auxoutsA] = MulticueF0v14(audioAngry, fs, f0floor, f0ceil);
+    infoAngry{i-200}.f0raw = f0rawA;
+    infoAngry{i-200}.vuv = vuvA;
+    infoAngry{i-200}.pow = auxoutsA.InstantaneousPower;
+
+    <span class="comment">% Happy information</span>
+    fileHappyTemp = strcat(filePathHappy, int2str(i), <span class="string">'.wav'</span>);
+    [audioHappy, fs] = audioread(fileHappyTemp);
+    [f0rawH, vuvH, auxoutsH] = MulticueF0v14(audioHappy, fs, f0floor, f0ceil);
+    infoHappy{i-200}.f0raw = f0rawH;
+    infoHappy{i-200}.vuv = vuvH;
+    infoHappy{i-200}.pow = auxoutsH.InstantaneousPower;
+
+    <span class="comment">% Neutral information</span>
+    fileNeutralTemp = strcat(filePathNeutral, int2str(i), <span class="string">'.wav'</span>);
+    [audioNeutral, fs] = audioread(fileNeutralTemp);
+    [f0rawN, vuvN, auxoutsN] = MulticueF0v14(audioNeutral, fs, f0floor, f0ceil);
+    infoNeutral{i-200}.f0raw = f0rawN;
+    infoNeutral{i-200}.vuv = vuvN;
+    infoNeutral{i-200}.pow = auxoutsN.InstantaneousPower;
+
+    <span class="comment">% Sad information</span>
+    fileSadTemp = strcat(filePathSad, int2str(i), <span class="string">'.wav'</span>);
+    [audioSad, fs] = audioread(fileSadTemp);
+    [f0rawS, vuvS, auxoutsS] = MulticueF0v14(audioSad, fs, f0floor, f0ceil);
+    infoSad{i-200}.f0raw = f0rawS;
+    infoSad{i-200}.vuv = vuvS;
+    infoSad{i-200}.pow = auxoutsS.InstantaneousPower;
+
+<span class="keyword">end</span>
+
+<span class="comment">% save workspace for other use</span>
+save <span class="string">infoAngry_parallel.mat</span> <span class="string">infoAngry</span>;
+save <span class="string">infoHappy_parallel.mat</span> <span class="string">infoHappy</span>;
+save <span class="string">infoNeutral_parallel.mat</span> <span class="string">infoNeutral</span>;
+save <span class="string">infoSad_parallel.mat</span> <span class="string">infoSad</span>;
+</pre><pre class="codeoutput">Starting parallel pool (parpool) using the 'local' profile ... connected to 2 workers.
+Missing dominant segment that is centered at:856 (ms)
+Discontinuity in (1021:1161), Max jump=2.750036 oct.
+segment (826:871) is isolated.
+Missing dominant segment that is centered at:566 (ms)
+Missing dominant segment that is centered at:619 (ms)
+segment (597:654) is isolated.
+Missing dominant segment that is centered at:1219 (ms)
+segment (1206:1231) is isolated.
+Missing dominant segment that is centered at:1035 (ms)
+segment (540:592) is isolated.
+Missing dominant segment that is centered at:815 (ms)
+segment (1019:1040) is isolated.
+Missing dominant segment that is centered at:590 (ms)
+segment (568:621) is isolated.
+Missing dominant segment that is centered at:671 (ms)
+segment (645:714) is isolated.
+Missing dominant segment that is centered at:601 (ms)
+segment (597:617) is isolated.
+Missing dominant segment that is centered at:1079 (ms)
+segment (1047:1152) is isolated.
+Missing dominant segment that is centered at:245 (ms)
+segment (207:297) is isolated.
+Missing dominant segment that is centered at:459 (ms)
+segment (779:855) is isolated.
+Missing dominant segment that is centered at:951 (ms)
+segment (928:967) is isolated.
+Missing dominant segment that is centered at:369 (ms)
+segment (339:384) is isolated.
+Missing dominant segment that is centered at:167 (ms)
+segment (432:482) is isolated.
+Missing dominant segment that is centered at:1240 (ms)
+segment (141:199) is isolated.
+Missing dominant segment that is centered at:1025 (ms)
+segment (1006:1041) is isolated.
+Missing dominant segment that is centered at:1592 (ms)
+segment (1191:1256) is isolated.
+Missing dominant segment that is centered at:546 (ms)
+segment (515:596) is isolated.
+Missing dominant segment that is centered at:1171 (ms)
+segment (1149:1203) is isolated.
+Missing dominant segment that is centered at:1074 (ms)
+segment (1063:1086) is isolated.
+Missing dominant segment that is centered at:831 (ms)
+segment (797:840) is isolated.
+Discontinuity in (429:495), Max jump=0.7889269 oct.
+segment (1569:1605) is isolated.
+Missing dominant segment that is centered at:1016 (ms)
+Missing dominant segment that is centered at:467 (ms)
+segment (451:475) is isolated.
+Missing dominant segment that is centered at:395 (ms)
+segment (997:1042) is isolated.
+Missing dominant segment that is centered at:479 (ms)
+segment (368:460) is isolated.
+Missing dominant segment that is centered at:1238 (ms)
+segment (1235:1284) is isolated.
+Missing dominant segment that is centered at:544 (ms)
+segment (460:512) is isolated.
+Missing dominant segment that is centered at:1253 (ms)
+segment (519:584) is isolated.
+Missing dominant segment that is centered at:1172 (ms)
+segment (1240:1264) is isolated.
+segment (1148:1213) is isolated.
+Missing dominant segment that is centered at:1291 (ms)
+Missing dominant segment that is centered at:1839 (ms)
+segment (1267:1327) is isolated.
+Missing dominant segment that is centered at:224 (ms)
+segment (192:279) is isolated.
+segment (1810:1880) is isolated.
+Missing dominant segment that is centered at:812 (ms)
+Missing dominant segment that is centered at:1145 (ms)
+segment (778:828) is isolated.
+Missing dominant segment that is centered at:1077 (ms)
+segment (1050:1122) is isolated.
+Missing dominant segment that is centered at:1278 (ms)
+segment (1103:1223) is isolated.
+segment (1255:1324) is isolated.
+Missing dominant segment that is centered at:1986 (ms)
+segment (1912:2049) is isolated.
+Missing dominant segment that is centered at:361 (ms)
+segment (326:384) is isolated.
+Missing dominant segment that is centered at:115 (ms)
+segment (89:133) is isolated.
+Missing dominant segment that is centered at:216 (ms)
+segment (186:259) is isolated.
+Missing dominant segment that is centered at:1931 (ms)
+segment (1903:1967) is isolated.
+</pre><h2>data purifying<a name="4"></a></h2><p>process data into desired ones</p><pre class="codeinput"><span class="comment">% restore workspace</span>
+clear;clc;
+load(<span class="string">'infoAngry.mat'</span>);
+load(<span class="string">'infoHappy.mat'</span>);
+load(<span class="string">'infoNeutral.mat'</span>);
+load(<span class="string">'infoSad.mat'</span>);
+
+
+<span class="comment">% Angry</span>
+purifiedAngry.F0 = [];
+purifiedAngry.Time = [];
+purifiedAngry.Pow = [];
+
+<span class="keyword">for</span> i= 1:50
+
+    purifiedF0 = infoAngry{i}.f0raw .* infoAngry{i}.vuv;
+    purifiedF0 = purifiedF0(purifiedF0 ~= 0);
+    purifiedAngry.F0 =  [ purifiedAngry.F0; purifiedF0 ];
+
+    [idx, purifiedTime,~] = time_calc(infoAngry{i}.vuv);
+    purifiedAngry.Time = [purifiedAngry.Time; purifiedTime];
+
+    <span class="keyword">for</span> j = 1:length(idx)
+        purifiedPow = sum(infoAngry{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
+        purifiedAngry.Pow = [purifiedAngry.Pow; purifiedPow];
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+
+<span class="comment">% Happy</span>
+purifiedHappy.F0 = [];
+purifiedHappy.Time = [];
+purifiedHappy.Pow = [];
+<span class="keyword">for</span> i= 1:50
+
+    purifiedF0 = infoHappy{i}.f0raw .* infoHappy{i}.vuv;
+    purifiedF0 = purifiedF0(purifiedF0 ~= 0);
+    purifiedHappy.F0 =  [ purifiedHappy.F0; purifiedF0 ];
+
+    [idx, purifiedTime,~] = time_calc(infoHappy{i}.vuv);
+    purifiedHappy.Time = [purifiedHappy.Time; purifiedTime];
+
+    <span class="keyword">for</span> j = 1:length(idx)
+        purifiedPow = sum(infoHappy{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
+        purifiedHappy.Pow = [purifiedHappy.Pow; purifiedPow];
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+
+<span class="comment">% Neutral</span>
+purifiedNeutral.F0 = [];
+purifiedNeutral.Time = [];
+purifiedNeutral.Pow = [];
+
+<span class="keyword">for</span> i= 1:50
+
+    purifiedF0 = infoNeutral{i}.f0raw .* infoNeutral{i}.vuv;
+    purifiedF0 = purifiedF0(purifiedF0 ~= 0);
+    purifiedNeutral.F0 =  [ purifiedNeutral.F0; purifiedF0 ];
+
+    [idx, purifiedTime, ~] = time_calc(infoNeutral{i}.vuv);
+    purifiedNeutral.Time = [purifiedNeutral.Time; purifiedTime];
+
+    <span class="keyword">for</span> j = 1:length(idx)
+        purifiedPow = sum(infoNeutral{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
+        purifiedNeutral.Pow = [purifiedNeutral.Pow; purifiedPow];
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+
+<span class="comment">% Sad</span>
+purifiedSad.F0 = [];
+purifiedSad.Time = [];
+purifiedSad.Pow = [];
+
+<span class="keyword">for</span> i= 1:50
+
+    purifiedF0 = infoSad{i}.f0raw .* infoSad{i}.vuv;
+    purifiedF0 = purifiedF0(purifiedF0 ~= 0);
+    purifiedSad.F0 =  [ purifiedSad.F0; purifiedF0 ];
+
+    [idx, purifiedTime, ~] = time_calc(infoSad{i}.vuv);
+    purifiedSad.Time = [purifiedSad.Time; purifiedTime];
+
+    <span class="keyword">for</span> j = 1:length(idx)
+        purifiedPow = sum(infoSad{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
+        purifiedSad.Pow = [purifiedSad.Pow; purifiedPow];
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+<span class="comment">% save workspace for other use</span>
+save <span class="string">purifiedAngry.mat</span> <span class="string">purifiedAngry</span>
+save <span class="string">purifiedSad.mat</span> <span class="string">purifiedSad</span>
+save <span class="string">purifiedNeutral.mat</span> <span class="string">purifiedNeutral</span>
+save <span class="string">purifiedHappy.mat</span> <span class="string">purifiedHappy</span>
+</pre><h2>Plot<a name="5"></a></h2><p>draw the distributions of each state</p><pre class="codeinput">clear;clc;
+
+load <span class="string">purifiedAngry.mat</span>;
+load <span class="string">purifiedHappy.mat</span>
+load <span class="string">purifiedNeutral.mat</span>
+load <span class="string">purifiedSad.mat</span>
+
+<span class="comment">%============================================================================================================================%</span>
+<span class="comment">%============================================================================================================================%</span>
+<span class="comment">% distribution of F0</span>
+figure;
+
+<span class="comment">% F0 of Neutral</span>
+subplot(2,2,1);
+title(<span class="string">'distribution of F0 of state Neutral with STRAIGHT'</span>);
+hold <span class="string">on</span>;
+LegHandles = []; LegText = {};
+
+<span class="comment">% --- Plot data originally in dataset "purifiedNeutral.F0"</span>
+[CdfF,CdfX] = ecdf(purifiedNeutral.F0,<span class="string">'Function'</span>,<span class="string">'cdf'</span>);  <span class="comment">% compute empirical cdf</span>
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedNeutral.F0,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,<span class="string">'edges'</span>,BinEdge);
+hLine = bar(BinCenter,BinHeight,<span class="string">'hist'</span>);
+set(hLine,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'black'</span>,<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,1);
+xlabel(<span class="string">'F0 (Hz)'</span>);
+ylabel(<span class="string">'Density'</span>);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'NeutralF0'</span>;
+
+<span class="comment">% Create grid where function will be computed</span>
+XLim = get(gca,<span class="string">'XLim'</span>);
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+<span class="comment">% --- Create fit "fitNeutralF0"</span>
+
+<span class="comment">% Fit this distribution to get parameter values</span>
+<span class="comment">% To use parameter estimates from the original fit:</span>
+
+pd1 = fitdist(purifiedNeutral.F0, <span class="string">'normal'</span>);
+histNeutral.F0.average = pd1.mean;
+histNeutral.F0.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,<span class="string">'Color'</span>,[1 0 0],<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,2,<span class="keyword">...</span>
+    <span class="string">'Marker'</span>,<span class="string">'none'</span>, <span class="string">'MarkerSize'</span>,6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'fitNeutralF0'</span>;
+
+str1 = strcat(<span class="string">'\mu :  '</span>, num2str(histNeutral.F0.average));
+text(50, 7e-3, str1);
+str2 = strcat(<span class="string">'\sigma :  '</span>, num2str(histNeutral.F0.deviation));
+text(50, 5e-3, str2);
+axis([0, 600, 0, 8e-3]);
+
+<span class="comment">% Adjust figure</span>
+box <span class="string">on</span>;
+hold <span class="string">off</span>;
+
+<span class="comment">% Create legend from accumulated handles and labels</span>
+hLegend = legend(LegHandles,LegText,<span class="string">'Orientation'</span>, <span class="string">'vertical'</span>, <span class="string">'FontSize'</span>, 9, <span class="string">'Location'</span>, <span class="string">'northeast'</span>);
+set(hLegend,<span class="string">'Interpreter'</span>,<span class="string">'none'</span>);
+<span class="comment">% legend off;</span>
+
+
+
+<span class="comment">% F0 of Sad</span>
+subplot(2,2,3);
+title(<span class="string">'distribution of F0 of state Sad with STRAIGHT'</span>);
+hold <span class="string">on</span>;
+LegHandles = []; LegText = {};
+
+<span class="comment">% --- Plot data originally in dataset "purifiedSad.F0"</span>
+[CdfF,CdfX] = ecdf(purifiedSad.F0,<span class="string">'Function'</span>,<span class="string">'cdf'</span>);  <span class="comment">% compute empirical cdf</span>
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedSad.F0,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,<span class="string">'edges'</span>,BinEdge);
+hLine = bar(BinCenter,BinHeight,<span class="string">'hist'</span>);
+set(hLine,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'black'</span>,<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,1);
+xlabel(<span class="string">'F0 (Hz)'</span>);
+ylabel(<span class="string">'Density'</span>);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'SadF0'</span>;
+
+<span class="comment">% Create grid where function will be computed</span>
+XLim = get(gca,<span class="string">'XLim'</span>);
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+<span class="comment">% --- Create fit "fitSadF0"</span>
+
+<span class="comment">% Fit this distribution to get parameter values</span>
+<span class="comment">% To use parameter estimates from the original fit:</span>
+
+pd1 = fitdist(purifiedSad.F0, <span class="string">'normal'</span>);
+histSad.F0.average = pd1.mean;
+histSad.F0.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,<span class="string">'Color'</span>,[1 0 0],<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,2,<span class="keyword">...</span>
+    <span class="string">'Marker'</span>,<span class="string">'none'</span>, <span class="string">'MarkerSize'</span>,6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'fitSadF0'</span>;
+
+str1 = strcat(<span class="string">'\mu : '</span>, num2str(histSad.F0.average));
+text(50, 7e-3, str1);
+str2 = strcat(<span class="string">'\sigma : '</span>, num2str(histSad.F0.deviation));
+text(50, 5e-3, str2);
+axis([0, 600, 0, 8e-3]);
+
+<span class="comment">% Adjust figure</span>
+box <span class="string">on</span>;
+hold <span class="string">off</span>;
+
+<span class="comment">% Create legend from accumulated handles and labels</span>
+hLegend = legend(LegHandles,LegText,<span class="string">'Orientation'</span>, <span class="string">'vertical'</span>, <span class="string">'FontSize'</span>, 9, <span class="string">'Location'</span>, <span class="string">'northeast'</span>);
+set(hLegend,<span class="string">'Interpreter'</span>,<span class="string">'none'</span>);
+<span class="comment">% legend off;</span>
+
+
+
+<span class="comment">% F0 of Angry</span>
+subplot(2,2,2);
+title(<span class="string">'distribution of F0 of state Angry with STRAIGHT'</span>);
+hold <span class="string">on</span>;
+LegHandles = []; LegText = {};
+
+<span class="comment">% --- Plot data originally in dataset "purifiedAngry.F0"</span>
+[CdfF,CdfX] = ecdf(purifiedAngry.F0,<span class="string">'Function'</span>,<span class="string">'cdf'</span>);  <span class="comment">% compute empirical cdf</span>
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedAngry.F0,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,<span class="string">'edges'</span>,BinEdge);
+hLine = bar(BinCenter,BinHeight,<span class="string">'hist'</span>);
+set(hLine,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'black'</span>,<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,1);
+xlabel(<span class="string">'F0 (Hz)'</span>);
+ylabel(<span class="string">'Density'</span>);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'AngryF0'</span>;
+
+<span class="comment">% Create grid where function will be computed</span>
+XLim = get(gca,<span class="string">'XLim'</span>);
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+<span class="comment">% --- Create fit "fitAngryF0"</span>
+
+<span class="comment">% Fit this distribution to get parameter values</span>
+<span class="comment">% To use parameter estimates from the original fit:</span>
+
+pd1 = fitdist(purifiedAngry.F0, <span class="string">'normal'</span>);
+histAngry.F0.average = pd1.mean;
+histAngry.F0.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,<span class="string">'Color'</span>,[1 0 0],<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,2,<span class="keyword">...</span>
+    <span class="string">'Marker'</span>,<span class="string">'none'</span>, <span class="string">'MarkerSize'</span>,6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'fitAngryF0'</span>;
+
+str1 = strcat(<span class="string">'\mu : '</span>, num2str(histAngry.F0.average));
+text(50, 7e-3, str1);
+str2 = strcat(<span class="string">'\sigma : '</span>, num2str(histAngry.F0.deviation));
+text(50, 5e-3, str2);
+axis([0, 600, 0, 8e-3]);
+
+<span class="comment">% Adjust figure</span>
+box <span class="string">on</span>;
+hold <span class="string">off</span>;
+
+<span class="comment">% Create legend from accumulated handles and labels</span>
+hLegend = legend(LegHandles,LegText,<span class="string">'Orientation'</span>, <span class="string">'vertical'</span>, <span class="string">'FontSize'</span>, 9, <span class="string">'Location'</span>, <span class="string">'northeast'</span>);
+set(hLegend,<span class="string">'Interpreter'</span>,<span class="string">'none'</span>);
+<span class="comment">% legend off;</span>
+
+
+
+<span class="comment">% F0 of Happy</span>
+subplot(2,2,4);
+title(<span class="string">'distribution of F0 of state Happy with STRAIGHT'</span>);
+hold <span class="string">on</span>;
+LegHandles = []; LegText = {};
+
+<span class="comment">% --- Plot data originally in dataset "purifiedHappy.F0"</span>
+[CdfF,CdfX] = ecdf(purifiedHappy.F0,<span class="string">'Function'</span>,<span class="string">'cdf'</span>);  <span class="comment">% compute empirical cdf</span>
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedHappy.F0,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,<span class="string">'edges'</span>,BinEdge);
+hLine = bar(BinCenter,BinHeight,<span class="string">'hist'</span>);
+set(hLine,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'black'</span>,<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,1);
+xlabel(<span class="string">'F0 (Hz)'</span>);
+ylabel(<span class="string">'Density'</span>);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'HappyF0'</span>;
+
+<span class="comment">% Create grid where function will be computed</span>
+XLim = get(gca,<span class="string">'XLim'</span>);
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+<span class="comment">% --- Create fit "fitHappyF0"</span>
+
+<span class="comment">% Fit this distribution to get parameter values</span>
+<span class="comment">% To use parameter estimates from the original fit:</span>
+
+pd1 = fitdist(purifiedHappy.F0, <span class="string">'normal'</span>);
+histHappy.F0.average = pd1.mean;
+histHappy.F0.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,<span class="string">'Color'</span>,[1 0 0],<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,2,<span class="keyword">...</span>
+    <span class="string">'Marker'</span>,<span class="string">'none'</span>, <span class="string">'MarkerSize'</span>,6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'fitHappyF0'</span>;
+
+str1 = strcat(<span class="string">'\mu : '</span>, num2str(histHappy.F0.average));
+text(50, 7e-3, str1);
+str2 = strcat(<span class="string">'\sigma : '</span>, num2str(histHappy.F0.deviation));
+text(50, 5e-3, str2);
+axis([0, 600, 0, 8e-3]);
+
+<span class="comment">% Adjust figure</span>
+box <span class="string">on</span>;
+hold <span class="string">off</span>;
+
+<span class="comment">% Create legend from accumulated handles and labels</span>
+hLegend = legend(LegHandles,LegText,<span class="string">'Orientation'</span>, <span class="string">'vertical'</span>, <span class="string">'FontSize'</span>, 9, <span class="string">'Location'</span>, <span class="string">'northeast'</span>);
+set(hLegend,<span class="string">'Interpreter'</span>,<span class="string">'none'</span>);
+<span class="comment">% legend off;</span>
+
+
+
+<span class="comment">%============================================================================================================================%</span>
+<span class="comment">%============================================================================================================================%</span>
+<span class="comment">% distribution of Time</span>
+figure;
+
+<span class="comment">% Time of Neutral</span>
+subplot(2,2,1);
+title(<span class="string">'distribution of time of state Neutral'</span>);
+hold <span class="string">on</span>;
+LegHandles = []; LegText = {};
+
+<span class="comment">% --- Plot data originally in dataset "purifiedNeutral.Time"</span>
+[CdfF,CdfX] = ecdf(purifiedNeutral.Time,<span class="string">'Function'</span>,<span class="string">'cdf'</span>);  <span class="comment">% compute empirical cdf</span>
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedNeutral.Time,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,<span class="string">'edges'</span>,BinEdge);
+hLine = bar(BinCenter,BinHeight,<span class="string">'hist'</span>);
+set(hLine,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'black'</span>,<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,1);
+xlabel(<span class="string">'Time Duration (ms)'</span>);
+ylabel(<span class="string">'Density'</span>);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'NeutralTime'</span>;
+
+<span class="comment">% Create grid where function will be computed</span>
+XLim = get(gca,<span class="string">'XLim'</span>);
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+<span class="comment">% --- Create fit "fitNeutralTime"</span>
+
+<span class="comment">% Fit this distribution to get parameter values</span>
+<span class="comment">% To use parameter estimates from the original fit:</span>
+
+pd1 = fitdist(purifiedNeutral.Time, <span class="string">'gamma'</span>);
+histNeutral.Time.Shape = pd1.a;
+histNeutral.Time.Scale = pd1.b;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,<span class="string">'Color'</span>,[1 0 0],<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,2,<span class="keyword">...</span>
+    <span class="string">'Marker'</span>,<span class="string">'none'</span>, <span class="string">'MarkerSize'</span>,6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'fitNeutralTime'</span>;
+
+str1 = <span class="string">'E(X): '</span>;
+str2 = <span class="string">'Var(X): '</span>;
+
+text(600, 4e-3, str1);
+text(600, 3.5e-3, num2str(histNeutral.Time.Shape * histNeutral.Time.Scale));
+text(600, 3e-3, str2);
+text(600, 2.5e-3, num2str(histNeutral.Time.Shape * histNeutral.Time.Scale .^ 2));
+axis([0, 800, 0, 6e-3]);
+<span class="comment">% Adjust figure</span>
+box <span class="string">on</span>;
+hold <span class="string">off</span>;
+
+<span class="comment">% Create legend from accumulated handles and labels</span>
+hLegend = legend(LegHandles,LegText,<span class="string">'Orientation'</span>, <span class="string">'vertical'</span>, <span class="string">'FontSize'</span>, 9, <span class="string">'Location'</span>, <span class="string">'northeast'</span>);
+set(hLegend,<span class="string">'Interpreter'</span>,<span class="string">'none'</span>);
+<span class="comment">% legend off;</span>
+
+
+
+<span class="comment">% Time of Sad</span>
+subplot(2,2,3);
+title(<span class="string">'distribution of time of state Sad'</span>);
+hold <span class="string">on</span>;
+LegHandles = []; LegText = {};
+
+<span class="comment">% --- Plot data originally in dataset "purifiedSad.Time"</span>
+[CdfF,CdfX] = ecdf(purifiedSad.Time,<span class="string">'Function'</span>,<span class="string">'cdf'</span>);  <span class="comment">% compute empirical cdf</span>
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedSad.Time,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,<span class="string">'edges'</span>,BinEdge);
+hLine = bar(BinCenter,BinHeight,<span class="string">'hist'</span>);
+set(hLine,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'black'</span>,<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,1);
+xlabel(<span class="string">'Time Duration (ms)'</span>);
+ylabel(<span class="string">'Density'</span>);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'SadTime'</span>;
+
+<span class="comment">% Create grid where function will be computed</span>
+XLim = get(gca,<span class="string">'XLim'</span>);
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+<span class="comment">% --- Create fit "fitSadTime"</span>
+
+<span class="comment">% Fit this distribution to get parameter values</span>
+<span class="comment">% To use parameter estimates from the original fit:</span>
+
+pd1 = fitdist(purifiedSad.Time, <span class="string">'gamma'</span>);
+histSad.Time.Shape = pd1.a;
+histSad.Time.Scale = pd1.b;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,<span class="string">'Color'</span>,[1 0 0],<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,2,<span class="keyword">...</span>
+    <span class="string">'Marker'</span>,<span class="string">'none'</span>, <span class="string">'MarkerSize'</span>,6);
+<span class="comment">% text('Scale Factor', pd1.b);</span>
+<span class="comment">% text('Shape Factor', pd1.a);</span>
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'fitSadTime'</span>;
+
+text(600, 4e-3, str1);
+text(600, 3.5e-3, num2str(histSad.Time.Shape * histSad.Time.Scale));
+text(600, 3e-3, str2);
+text(600, 2.5e-3, num2str(histSad.Time.Shape * histSad.Time.Scale .^ 2));
+axis([0, 800, 0, 6e-3]);
+<span class="comment">% Adjust figure</span>
+box <span class="string">on</span>;
+hold <span class="string">off</span>;
+
+<span class="comment">% Create legend from accumulated handles and labels</span>
+hLegend = legend(LegHandles,LegText,<span class="string">'Orientation'</span>, <span class="string">'vertical'</span>, <span class="string">'FontSize'</span>, 9, <span class="string">'Location'</span>, <span class="string">'northeast'</span>);
+set(hLegend,<span class="string">'Interpreter'</span>,<span class="string">'none'</span>);
+
+
+
+<span class="comment">% Time of Angry</span>
+subplot(2,2,2);
+title(<span class="string">'distribution of time of state Angry'</span>);
+hold <span class="string">on</span>;
+LegHandles = []; LegText = {};
+
+<span class="comment">% --- Plot data originally in dataset "purifiedAngry.Time"</span>
+[CdfF,CdfX] = ecdf(purifiedAngry.Time,<span class="string">'Function'</span>,<span class="string">'cdf'</span>);  <span class="comment">% compute empirical cdf</span>
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedAngry.Time,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,<span class="string">'edges'</span>,BinEdge);
+hLine = bar(BinCenter,BinHeight,<span class="string">'hist'</span>);
+set(hLine,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'black'</span>,<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,1);
+xlabel(<span class="string">'Time Duration (ms)'</span>);
+ylabel(<span class="string">'Density'</span>);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'AngryTime'</span>;
+
+<span class="comment">% Create grid where function will be computed</span>
+XLim = get(gca,<span class="string">'XLim'</span>);
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+<span class="comment">% --- Create fit "fitAngryTime"</span>
+
+<span class="comment">% Fit this distribution to get parameter values</span>
+<span class="comment">% To use parameter estimates from the original fit:</span>
+
+pd1 = fitdist(purifiedAngry.Time, <span class="string">'gamma'</span>);
+histAngry.Time.Shape = pd1.a;
+histAngry.Time.Scale = pd1.b;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,<span class="string">'Color'</span>,[1 0 0],<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,2,<span class="keyword">...</span>
+    <span class="string">'Marker'</span>,<span class="string">'none'</span>, <span class="string">'MarkerSize'</span>,6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'fitAngryTime'</span>;
+
+text(600, 4e-3, str1);
+text(600, 3.5e-3, num2str(histAngry.Time.Shape * histAngry.Time.Scale));
+text(600, 3e-3, str2);
+text(600, 2.5e-3, num2str(histAngry.Time.Shape * histAngry.Time.Scale .^ 2));
+axis([0, 800, 0, 6e-3]);
+<span class="comment">% Adjust figure</span>
+box <span class="string">on</span>;
+hold <span class="string">off</span>;
+
+<span class="comment">% Create legend from accumulated handles and labels</span>
+hLegend = legend(LegHandles,LegText,<span class="string">'Orientation'</span>, <span class="string">'vertical'</span>, <span class="string">'FontSize'</span>, 9, <span class="string">'Location'</span>, <span class="string">'northeast'</span>);
+set(hLegend,<span class="string">'Interpreter'</span>,<span class="string">'none'</span>);
+
+
+
+<span class="comment">% Time of Happy</span>
+subplot(2,2,4);
+title(<span class="string">'distribution of time of state Happy'</span>);
+hold <span class="string">on</span>;
+LegHandles = []; LegText = {};
+
+<span class="comment">% --- Plot data originally in dataset "purifiedHappy.Time"</span>
+[CdfF,CdfX] = ecdf(purifiedHappy.Time,<span class="string">'Function'</span>,<span class="string">'cdf'</span>);  <span class="comment">% compute empirical cdf</span>
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedHappy.Time,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,<span class="string">'edges'</span>,BinEdge);
+hLine = bar(BinCenter,BinHeight,<span class="string">'hist'</span>);
+set(hLine,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'black'</span>,<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,1);
+xlabel(<span class="string">'Time Duration (ms)'</span>);
+ylabel(<span class="string">'Density'</span>);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'HappyTime'</span>;
+
+<span class="comment">% Create grid where function will be computed</span>
+XLim = get(gca,<span class="string">'XLim'</span>);
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+<span class="comment">% --- Create fit "fitHappyTime"</span>
+
+<span class="comment">% Fit this distribution to get parameter values</span>
+<span class="comment">% To use parameter estimates from the original fit:</span>
+
+pd1 = fitdist(purifiedHappy.Time, <span class="string">'gamma'</span>);
+histHappy.Time.Shape = pd1.a;
+histHappy.Time.Scale = pd1.b;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,<span class="string">'Color'</span>,[1 0 0],<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,2,<span class="keyword">...</span>
+    <span class="string">'Marker'</span>,<span class="string">'none'</span>, <span class="string">'MarkerSize'</span>,6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'fitHappyTime'</span>;
+
+text(600, 4e-3, str1);
+text(600, 3.5e-3, num2str(histHappy.Time.Shape * histHappy.Time.Scale));
+text(600, 3e-3, str2);
+text(600, 2.5e-3, num2str(histHappy.Time.Shape * histHappy.Time.Scale .^ 2));
+axis([0, 800, 0, 6e-3]);
+<span class="comment">% Adjust figure</span>
+box <span class="string">on</span>;
+hold <span class="string">off</span>;
+
+<span class="comment">% Create legend from accumulated handles and labels</span>
+hLegend = legend(LegHandles,LegText,<span class="string">'Orientation'</span>, <span class="string">'vertical'</span>, <span class="string">'FontSize'</span>, 9, <span class="string">'Location'</span>, <span class="string">'northeast'</span>);
+set(hLegend,<span class="string">'Interpreter'</span>,<span class="string">'none'</span>);
+
+
+
+<span class="comment">%============================================================================================================================%</span>
+<span class="comment">%============================================================================================================================%</span>
+<span class="comment">% distribution of Pow</span>
+figure;
+
+<span class="comment">% Preprocessing &#8212;&#8212; add 32dB amp for each group due to compensation of</span>
+<span class="comment">% instantaneous power threshold in defaultparams.m -- line 36</span>
+purifiedNeutral.Pow = ampxdB(purifiedNeutral.Pow, 40);
+purifiedSad.Pow = ampxdB(purifiedSad.Pow, 40);
+purifiedAngry.Pow = ampxdB(purifiedAngry.Pow, 40);
+purifiedHappy.Pow = ampxdB(purifiedHappy.Pow, 40);
+
+
+<span class="comment">% Pow of Neutral</span>
+subplot(2,2,1);
+title(<span class="string">'distribution of pow of state Neutral'</span>);
+hold <span class="string">on</span>;
+LegHandles = []; LegText = {};
+
+<span class="comment">% --- Plot data originally in dataset "purifiedNeutral.Pow"</span>
+[CdfF,CdfX] = ecdf(purifiedNeutral.Pow,<span class="string">'Function'</span>,<span class="string">'cdf'</span>);  <span class="comment">% compute empirical cdf</span>
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedNeutral.Pow,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,<span class="string">'edges'</span>,BinEdge);
+hLine = bar(BinCenter,BinHeight,<span class="string">'hist'</span>);
+set(hLine,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'black'</span>,<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,1);
+xlabel(<span class="string">'Pow (dB)'</span>);
+ylabel(<span class="string">'Density'</span>);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'NeutralPow'</span>;
+
+<span class="comment">% Create grid where function will be computed</span>
+XLim = get(gca,<span class="string">'XLim'</span>);
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+<span class="comment">% --- Create fit "fitNeutralPow"</span>
+
+<span class="comment">% Fit this distribution to get parameter values</span>
+<span class="comment">% To use parameter estimates from the original fit:</span>
+
+pd1 = fitdist(purifiedNeutral.Pow, <span class="string">'normal'</span>);
+histNeutral.Pow.average = pd1.mean;
+histNeutral.Pow.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,<span class="string">'Color'</span>,[1 0 0],<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,2,<span class="keyword">...</span>
+    <span class="string">'Marker'</span>,<span class="string">'none'</span>, <span class="string">'MarkerSize'</span>,6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'fitNeutralPow'</span>;
+
+str1 = strcat(<span class="string">'\mu : '</span>, num2str(histNeutral.Pow.average));
+text(0, 0.1, str1);
+str2 = strcat(<span class="string">'\sigma : '</span>, num2str(histNeutral.Pow.deviation));
+text(0, 0.08, str2);
+axis <span class="string">tight</span>;
+
+<span class="comment">% Adjust figure</span>
+box <span class="string">on</span>;
+hold <span class="string">off</span>;
+
+<span class="comment">% Create legend from accumulated handles and labels</span>
+hLegend = legend(LegHandles,LegText,<span class="string">'Orientation'</span>, <span class="string">'vertical'</span>, <span class="string">'FontSize'</span>, 9, <span class="string">'Location'</span>, <span class="string">'northeast'</span>);
+set(hLegend,<span class="string">'Interpreter'</span>,<span class="string">'none'</span>);
+<span class="comment">% legend off;</span>
+
+
+
+<span class="comment">% Pow of Sad</span>
+subplot(2,2,3);
+title(<span class="string">'distribution of pow of state Sad'</span>);
+hold <span class="string">on</span>;
+LegHandles = []; LegText = {};
+
+<span class="comment">% --- Plot data originally in dataset "purifiedSad.Pow"</span>
+[CdfF,CdfX] = ecdf(purifiedSad.Pow,<span class="string">'Function'</span>,<span class="string">'cdf'</span>);  <span class="comment">% compute empirical cdf</span>
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedSad.Pow,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,<span class="string">'edges'</span>,BinEdge);
+hLine = bar(BinCenter,BinHeight,<span class="string">'hist'</span>);
+set(hLine,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'black'</span>,<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,1);
+xlabel(<span class="string">'Pow (dB)'</span>);
+ylabel(<span class="string">'Density'</span>);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'SadPow'</span>;
+
+<span class="comment">% Create grid where function will be computed</span>
+XLim = get(gca,<span class="string">'XLim'</span>);
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+<span class="comment">% --- Create fit "fitSadPow"</span>
+
+<span class="comment">% Fit this distribution to get parameter values</span>
+<span class="comment">% To use parameter estimates from the original fit:</span>
+
+pd1 = fitdist(purifiedSad.Pow, <span class="string">'normal'</span>);
+histSad.Pow.average = pd1.mean;
+histSad.Pow.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,<span class="string">'Color'</span>,[1 0 0],<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,2,<span class="keyword">...</span>
+    <span class="string">'Marker'</span>,<span class="string">'none'</span>, <span class="string">'MarkerSize'</span>,6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'fitSadPow'</span>;
+
+str1 = strcat(<span class="string">'\mu : '</span>, num2str(histSad.Pow.average));
+text(0, 0.1, str1);
+str2 = strcat(<span class="string">'\sigma : '</span>, num2str(histSad.Pow.deviation));
+text(0, 0.08, str2);
+axis <span class="string">tight</span>;
+
+<span class="comment">% Adjust figure</span>
+box <span class="string">on</span>;
+hold <span class="string">off</span>;
+
+<span class="comment">% Create legend from accumulated handles and labels</span>
+hLegend = legend(LegHandles,LegText,<span class="string">'Orientation'</span>, <span class="string">'vertical'</span>, <span class="string">'FontSize'</span>, 9, <span class="string">'Location'</span>, <span class="string">'northeast'</span>);
+set(hLegend,<span class="string">'Interpreter'</span>,<span class="string">'none'</span>);
+<span class="comment">% legend off;</span>
+
+
+
+<span class="comment">% Pow of Angry</span>
+subplot(2,2,2);
+title(<span class="string">'distribution of pow of state Angry'</span>);
+hold <span class="string">on</span>;
+LegHandles = []; LegText = {};
+
+<span class="comment">% --- Plot data originally in dataset "purifiedAngry.Pow"</span>
+[CdfF,CdfX] = ecdf(purifiedAngry.Pow,<span class="string">'Function'</span>,<span class="string">'cdf'</span>);  <span class="comment">% compute empirical cdf</span>
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedAngry.Pow,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,<span class="string">'edges'</span>,BinEdge);
+hLine = bar(BinCenter,BinHeight,<span class="string">'hist'</span>);
+set(hLine,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'black'</span>,<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,1);
+xlabel(<span class="string">'Pow (dB)'</span>);
+ylabel(<span class="string">'Density'</span>);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'AngryPow'</span>;
+
+<span class="comment">% Create grid where function will be computed</span>
+XLim = get(gca,<span class="string">'XLim'</span>);
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+<span class="comment">% --- Create fit "fitAngryPow"</span>
+
+<span class="comment">% Fit this distribution to get parameter values</span>
+<span class="comment">% To use parameter estimates from the original fit:</span>
+
+pd1 = fitdist(purifiedAngry.Pow, <span class="string">'normal'</span>);
+histAngry.Pow.average = pd1.mean;
+histAngry.Pow.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,<span class="string">'Color'</span>,[1 0 0],<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,2,<span class="keyword">...</span>
+    <span class="string">'Marker'</span>,<span class="string">'none'</span>, <span class="string">'MarkerSize'</span>,6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'fitAngryPow'</span>;
+
+str1 = strcat(<span class="string">'\mu : '</span>, num2str(histAngry.Pow.average));
+text(0, 0.1, str1);
+str2 = strcat(<span class="string">'\sigma : '</span>, num2str(histAngry.Pow.deviation));
+text(0, 0.08, str2);
+axis <span class="string">tight</span>;
+
+<span class="comment">% Adjust figure</span>
+box <span class="string">on</span>;
+hold <span class="string">off</span>;
+
+<span class="comment">% Create legend from accumulated handles and labels</span>
+hLegend = legend(LegHandles,LegText,<span class="string">'Orientation'</span>, <span class="string">'vertical'</span>, <span class="string">'FontSize'</span>, 9, <span class="string">'Location'</span>, <span class="string">'northeast'</span>);
+set(hLegend,<span class="string">'Interpreter'</span>,<span class="string">'none'</span>);
+<span class="comment">% legend off;</span>
+
+
+
+<span class="comment">% Pow of Happy</span>
+subplot(2,2,4);
+title(<span class="string">'distribution of pow of state Happy'</span>);
+hold <span class="string">on</span>;
+LegHandles = []; LegText = {};
+
+<span class="comment">% --- Plot data originally in dataset "purifiedHappy.Pow"</span>
+[CdfF,CdfX] = ecdf(purifiedHappy.Pow,<span class="string">'Function'</span>,<span class="string">'cdf'</span>);  <span class="comment">% compute empirical cdf</span>
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedHappy.Pow,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,<span class="string">'edges'</span>,BinEdge);
+hLine = bar(BinCenter,BinHeight,<span class="string">'hist'</span>);
+set(hLine,<span class="string">'FaceColor'</span>,<span class="string">'blue'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'black'</span>,<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,1);
+xlabel(<span class="string">'Pow (dB)'</span>);
+ylabel(<span class="string">'Density'</span>);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'HappyPow'</span>;
+
+<span class="comment">% Create grid where function will be computed</span>
+XLim = get(gca,<span class="string">'XLim'</span>);
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+<span class="comment">% --- Create fit "fitHappyPow"</span>
+
+<span class="comment">% Fit this distribution to get parameter values</span>
+<span class="comment">% To use parameter estimates from the original fit:</span>
+
+pd1 = fitdist(purifiedHappy.Pow, <span class="string">'normal'</span>);
+histHappy.Pow.average = pd1.mean;
+histHappy.Pow.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,<span class="string">'Color'</span>,[1 0 0],<span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'-'</span>, <span class="string">'LineWidth'</span>,2,<span class="keyword">...</span>
+    <span class="string">'Marker'</span>,<span class="string">'none'</span>, <span class="string">'MarkerSize'</span>,6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = <span class="string">'fitHappyPow'</span>;
+
+str1 = strcat(<span class="string">'\mu : '</span>, num2str(histHappy.Pow.average));
+text(0, 0.1, str1);
+str2 = strcat(<span class="string">'\sigma : '</span>, num2str(histHappy.Pow.deviation));
+text(0, 0.08, str2);
+axis <span class="string">tight</span>;
+
+<span class="comment">% Adjust figure</span>
+box <span class="string">on</span>;
+hold <span class="string">off</span>;
+
+<span class="comment">% Create legend from accumulated handles and labels</span>
+hLegend = legend(LegHandles,LegText,<span class="string">'Orientation'</span>, <span class="string">'vertical'</span>, <span class="string">'FontSize'</span>, 9, <span class="string">'Location'</span>, <span class="string">'northeast'</span>);
+set(hLegend,<span class="string">'Interpreter'</span>,<span class="string">'none'</span>);
+<span class="comment">% legend off;</span>
+</pre><img vspace="5" hspace="5" src="f0STRAIGHT.jpg" alt=""> <img vspace="5" hspace="5" src="timeDistributionFixed.jpg" alt=""> <img vspace="5" hspace="5" src="powerDistribution.jpg" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Emotional Speech Analysis Thesis Project
+% Copyright jhdu @ Information Engineering department,
+% School of Electronics and Information Engineering, 
+% Soochow University.
+% All rights reserved.
+
+
+
+
+%% File path set and initialization
+% designate the destination of the path of training set
+clear;clc;
+
+filePath = 'F:\Working_stuff\毕设\情感语音\情感语音';
+
+filePathAngry = strcat(filePath, '\生气\');
+filePathHappy = strcat(filePath, '\高兴\');
+filePathNeutral = strcat(filePath, '\中性\');
+filePathSad = strcat(filePath, '\悲伤\');
+
+addpath(filePathAngry, filePathHappy, filePathNeutral, filePathSad);
+
+% parameter settings for feature extration
+defaultparams;
+f0floor = 50;
+f0ceil = 500;
+
+% version check
+ver_chk = version;
+ver_chk = str2double(ver_chk(1:3));
+
+%% Training Serial Version
+% F0 time and power calculation
+% raw, still remain to be processed
+infoAngry = cell(50,1);
+infoHappy = cell(50,1);
+infoNeutral = cell(50,1);
+infoSad = cell(50,1);
+
+for i = 201:250
+    
+    % Angry information
+    fileAngryTemp = strcat(filePathAngry, int2str(i), '.wav');
+    [audioAngry, fs] = audioread(fileAngryTemp);
+    [f0raw, vuv, auxouts] = MulticueF0v14(audioAngry, fs, f0floor, f0ceil);
+    infoAngry{i-200}.f0raw = f0raw;
+    infoAngry{i-200}.vuv = vuv;
+    infoAngry{i-200}.pow = auxouts.InstantaneousPower;
+    
+    % Happy information
+    fileHappyTemp = strcat(filePathHappy, int2str(i), '.wav');
+    [audioHappy, fs] = audioread(fileHappyTemp);
+    [f0raw, vuv, auxouts] = MulticueF0v14(audioHappy, fs, f0floor, f0ceil);
+    infoHappy{i-200}.f0raw = f0raw;
+    infoHappy{i-200}.vuv = vuv;
+    infoHappy{i-200}.pow = auxouts.InstantaneousPower;
+    
+    % Neutral information
+    fileNeutralTemp = strcat(filePathNeutral, int2str(i), '.wav');
+    [audioNeutral, fs] = audioread(fileNeutralTemp);
+    [f0raw, vuv, auxouts] = MulticueF0v14(audioNeutral, fs, f0floor, f0ceil);
+    infoNeutral{i-200}.f0raw = f0raw;
+    infoNeutral{i-200}.vuv = vuv;
+    infoNeutral{i-200}.pow = auxouts.InstantaneousPower;
+    
+    % Sad information
+    fileSadTemp = strcat(filePathSad, int2str(i), '.wav');
+    [audioSad, fs] = audioread(fileSadTemp);
+    [f0raw, vuv, auxouts] = MulticueF0v14(audioSad, fs, f0floor, f0ceil);
+    infoSad{i-200}.f0raw = f0raw;
+    infoSad{i-200}.vuv = vuv;
+    infoSad{i-200}.pow = auxouts.InstantaneousPower;
+    
+end
+
+% save workspace for other use
+save infoAngry.mat infoAngry;
+save infoHappy.mat infoHappy;
+save infoNeutral.mat infoNeutral;
+save infoSad.mat infoSad;
+
+
+%% Training parallel version
+% F0 time and power calculation
+% raw, still remain to be processed
+infoAngry = cell(50,1);
+infoHappy = cell(50,1);
+infoNeutral = cell(50,1);
+infoSad = cell(50,1);
+
+parfor i = 201:250
+    
+    % Angry information
+    fileAngryTemp = strcat(filePathAngry, int2str(i), '.wav');
+    [audioAngry, fs] = audioread(fileAngryTemp);
+    [f0rawA, vuvA, auxoutsA] = MulticueF0v14(audioAngry, fs, f0floor, f0ceil);
+    infoAngry{i-200}.f0raw = f0rawA;
+    infoAngry{i-200}.vuv = vuvA;
+    infoAngry{i-200}.pow = auxoutsA.InstantaneousPower;
+    
+    % Happy information
+    fileHappyTemp = strcat(filePathHappy, int2str(i), '.wav');
+    [audioHappy, fs] = audioread(fileHappyTemp);
+    [f0rawH, vuvH, auxoutsH] = MulticueF0v14(audioHappy, fs, f0floor, f0ceil);
+    infoHappy{i-200}.f0raw = f0rawH;
+    infoHappy{i-200}.vuv = vuvH;
+    infoHappy{i-200}.pow = auxoutsH.InstantaneousPower;
+    
+    % Neutral information
+    fileNeutralTemp = strcat(filePathNeutral, int2str(i), '.wav');
+    [audioNeutral, fs] = audioread(fileNeutralTemp);
+    [f0rawN, vuvN, auxoutsN] = MulticueF0v14(audioNeutral, fs, f0floor, f0ceil);
+    infoNeutral{i-200}.f0raw = f0rawN;
+    infoNeutral{i-200}.vuv = vuvN;
+    infoNeutral{i-200}.pow = auxoutsN.InstantaneousPower;
+    
+    % Sad information
+    fileSadTemp = strcat(filePathSad, int2str(i), '.wav');
+    [audioSad, fs] = audioread(fileSadTemp);
+    [f0rawS, vuvS, auxoutsS] = MulticueF0v14(audioSad, fs, f0floor, f0ceil);
+    infoSad{i-200}.f0raw = f0rawS;
+    infoSad{i-200}.vuv = vuvS;
+    infoSad{i-200}.pow = auxoutsS.InstantaneousPower;
+    
+end
+
+% save workspace for other use
+save infoAngry_parallel.mat infoAngry;
+save infoHappy_parallel.mat infoHappy;
+save infoNeutral_parallel.mat infoNeutral;
+save infoSad_parallel.mat infoSad;
+
+
+
+%% data purifying
+% process data into desired ones
+
+% restore workspace
+clear;clc;
+load('infoAngry.mat');
+load('infoHappy.mat');
+load('infoNeutral.mat');
+load('infoSad.mat');
+
+
+% Angry
+purifiedAngry.F0 = [];
+purifiedAngry.Time = [];
+purifiedAngry.Pow = [];
+
+for i= 1:50
+    
+    purifiedF0 = infoAngry{i}.f0raw .* infoAngry{i}.vuv;
+    purifiedF0 = purifiedF0(purifiedF0 ~= 0);
+    purifiedAngry.F0 =  [ purifiedAngry.F0; purifiedF0 ];
+    
+    [idx, purifiedTime,~] = time_calc(infoAngry{i}.vuv);
+    purifiedAngry.Time = [purifiedAngry.Time; purifiedTime];
+    
+    for j = 1:length(idx)
+        purifiedPow = sum(infoAngry{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
+        purifiedAngry.Pow = [purifiedAngry.Pow; purifiedPow];
+    end
+end
+
+
+
+% Happy
+purifiedHappy.F0 = [];
+purifiedHappy.Time = [];
+purifiedHappy.Pow = [];
+for i= 1:50
+    
+    purifiedF0 = infoHappy{i}.f0raw .* infoHappy{i}.vuv;
+    purifiedF0 = purifiedF0(purifiedF0 ~= 0);
+    purifiedHappy.F0 =  [ purifiedHappy.F0; purifiedF0 ];
+    
+    [idx, purifiedTime,~] = time_calc(infoHappy{i}.vuv);
+    purifiedHappy.Time = [purifiedHappy.Time; purifiedTime];
+    
+    for j = 1:length(idx)
+        purifiedPow = sum(infoHappy{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
+        purifiedHappy.Pow = [purifiedHappy.Pow; purifiedPow];
+    end
+end
+
+
+
+% Neutral
+purifiedNeutral.F0 = [];
+purifiedNeutral.Time = [];
+purifiedNeutral.Pow = [];
+
+for i= 1:50
+    
+    purifiedF0 = infoNeutral{i}.f0raw .* infoNeutral{i}.vuv;
+    purifiedF0 = purifiedF0(purifiedF0 ~= 0);
+    purifiedNeutral.F0 =  [ purifiedNeutral.F0; purifiedF0 ];
+    
+    [idx, purifiedTime, ~] = time_calc(infoNeutral{i}.vuv);
+    purifiedNeutral.Time = [purifiedNeutral.Time; purifiedTime];
+    
+    for j = 1:length(idx)
+        purifiedPow = sum(infoNeutral{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
+        purifiedNeutral.Pow = [purifiedNeutral.Pow; purifiedPow];
+    end
+end
+
+
+
+% Sad
+purifiedSad.F0 = [];
+purifiedSad.Time = [];
+purifiedSad.Pow = [];
+
+for i= 1:50
+    
+    purifiedF0 = infoSad{i}.f0raw .* infoSad{i}.vuv;
+    purifiedF0 = purifiedF0(purifiedF0 ~= 0);
+    purifiedSad.F0 =  [ purifiedSad.F0; purifiedF0 ];
+    
+    [idx, purifiedTime, ~] = time_calc(infoSad{i}.vuv);
+    purifiedSad.Time = [purifiedSad.Time; purifiedTime];
+    
+    for j = 1:length(idx)
+        purifiedPow = sum(infoSad{i}.pow(idx(j) : idx(j) + purifiedTime(j) - 1) ) / purifiedTime(j);
+        purifiedSad.Pow = [purifiedSad.Pow; purifiedPow];
+    end
+end
+
+
+% save workspace for other use
+save purifiedAngry.mat purifiedAngry
+save purifiedSad.mat purifiedSad
+save purifiedNeutral.mat purifiedNeutral
+save purifiedHappy.mat purifiedHappy
+
+
+
+%% Plot
+% draw the distributions of each state
+clear;clc;
+
+load purifiedAngry.mat;
+load purifiedHappy.mat
+load purifiedNeutral.mat
+load purifiedSad.mat
+
+%============================================================================================================================%
+%============================================================================================================================%
+% distribution of F0
+figure;
+
+% F0 of Neutral
+subplot(2,2,1);
+title('distribution of F0 of state Neutral with STRAIGHT');
+hold on;
+LegHandles = []; LegText = {};
+
+% REPLACE_WITH_DASH_DASH- Plot data originally in dataset "purifiedNeutral.F0"
+[CdfF,CdfX] = ecdf(purifiedNeutral.F0,'Function','cdf');  % compute empirical cdf
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedNeutral.F0,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,'edges',BinEdge);
+hLine = bar(BinCenter,BinHeight,'hist');
+set(hLine,'FaceColor','blue','EdgeColor','black',...
+    'LineStyle','-', 'LineWidth',1);
+xlabel('F0 (Hz)');
+ylabel('Density');
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'NeutralF0';
+
+% Create grid where function will be computed
+XLim = get(gca,'XLim');
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+% REPLACE_WITH_DASH_DASH- Create fit "fitNeutralF0"
+
+% Fit this distribution to get parameter values
+% To use parameter estimates from the original fit:
+
+pd1 = fitdist(purifiedNeutral.F0, 'normal');
+histNeutral.F0.average = pd1.mean;
+histNeutral.F0.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
+    'LineStyle','-', 'LineWidth',2,...
+    'Marker','none', 'MarkerSize',6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'fitNeutralF0';
+
+str1 = strcat('\mu :  ', num2str(histNeutral.F0.average));
+text(50, 7e-3, str1);
+str2 = strcat('\sigma :  ', num2str(histNeutral.F0.deviation));
+text(50, 5e-3, str2);
+axis([0, 600, 0, 8e-3]);
+
+% Adjust figure
+box on;
+hold off;
+
+% Create legend from accumulated handles and labels
+hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
+set(hLegend,'Interpreter','none');
+% legend off;
+
+
+
+% F0 of Sad
+subplot(2,2,3);
+title('distribution of F0 of state Sad with STRAIGHT');
+hold on;
+LegHandles = []; LegText = {};
+
+% REPLACE_WITH_DASH_DASH- Plot data originally in dataset "purifiedSad.F0"
+[CdfF,CdfX] = ecdf(purifiedSad.F0,'Function','cdf');  % compute empirical cdf
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedSad.F0,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,'edges',BinEdge);
+hLine = bar(BinCenter,BinHeight,'hist');
+set(hLine,'FaceColor','blue','EdgeColor','black',...
+    'LineStyle','-', 'LineWidth',1);
+xlabel('F0 (Hz)');
+ylabel('Density');
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'SadF0';
+
+% Create grid where function will be computed
+XLim = get(gca,'XLim');
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+% REPLACE_WITH_DASH_DASH- Create fit "fitSadF0"
+
+% Fit this distribution to get parameter values
+% To use parameter estimates from the original fit:
+
+pd1 = fitdist(purifiedSad.F0, 'normal');
+histSad.F0.average = pd1.mean;
+histSad.F0.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
+    'LineStyle','-', 'LineWidth',2,...
+    'Marker','none', 'MarkerSize',6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'fitSadF0';
+
+str1 = strcat('\mu : ', num2str(histSad.F0.average));
+text(50, 7e-3, str1);
+str2 = strcat('\sigma : ', num2str(histSad.F0.deviation));
+text(50, 5e-3, str2);
+axis([0, 600, 0, 8e-3]);
+
+% Adjust figure
+box on;
+hold off;
+
+% Create legend from accumulated handles and labels
+hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
+set(hLegend,'Interpreter','none');
+% legend off;
+
+
+
+% F0 of Angry
+subplot(2,2,2);
+title('distribution of F0 of state Angry with STRAIGHT');
+hold on;
+LegHandles = []; LegText = {};
+
+% REPLACE_WITH_DASH_DASH- Plot data originally in dataset "purifiedAngry.F0"
+[CdfF,CdfX] = ecdf(purifiedAngry.F0,'Function','cdf');  % compute empirical cdf
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedAngry.F0,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,'edges',BinEdge);
+hLine = bar(BinCenter,BinHeight,'hist');
+set(hLine,'FaceColor','blue','EdgeColor','black',...
+    'LineStyle','-', 'LineWidth',1);
+xlabel('F0 (Hz)');
+ylabel('Density');
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'AngryF0';
+
+% Create grid where function will be computed
+XLim = get(gca,'XLim');
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+% REPLACE_WITH_DASH_DASH- Create fit "fitAngryF0"
+
+% Fit this distribution to get parameter values
+% To use parameter estimates from the original fit:
+
+pd1 = fitdist(purifiedAngry.F0, 'normal');
+histAngry.F0.average = pd1.mean;
+histAngry.F0.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
+    'LineStyle','-', 'LineWidth',2,...
+    'Marker','none', 'MarkerSize',6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'fitAngryF0';
+
+str1 = strcat('\mu : ', num2str(histAngry.F0.average));
+text(50, 7e-3, str1);
+str2 = strcat('\sigma : ', num2str(histAngry.F0.deviation));
+text(50, 5e-3, str2);
+axis([0, 600, 0, 8e-3]);
+
+% Adjust figure
+box on;
+hold off;
+
+% Create legend from accumulated handles and labels
+hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
+set(hLegend,'Interpreter','none');
+% legend off;
+
+
+
+% F0 of Happy
+subplot(2,2,4);
+title('distribution of F0 of state Happy with STRAIGHT');
+hold on;
+LegHandles = []; LegText = {};
+
+% REPLACE_WITH_DASH_DASH- Plot data originally in dataset "purifiedHappy.F0"
+[CdfF,CdfX] = ecdf(purifiedHappy.F0,'Function','cdf');  % compute empirical cdf
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedHappy.F0,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,'edges',BinEdge);
+hLine = bar(BinCenter,BinHeight,'hist');
+set(hLine,'FaceColor','blue','EdgeColor','black',...
+    'LineStyle','-', 'LineWidth',1);
+xlabel('F0 (Hz)');
+ylabel('Density');
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'HappyF0';
+
+% Create grid where function will be computed
+XLim = get(gca,'XLim');
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+% REPLACE_WITH_DASH_DASH- Create fit "fitHappyF0"
+
+% Fit this distribution to get parameter values
+% To use parameter estimates from the original fit:
+
+pd1 = fitdist(purifiedHappy.F0, 'normal');
+histHappy.F0.average = pd1.mean;
+histHappy.F0.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
+    'LineStyle','-', 'LineWidth',2,...
+    'Marker','none', 'MarkerSize',6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'fitHappyF0';
+
+str1 = strcat('\mu : ', num2str(histHappy.F0.average));
+text(50, 7e-3, str1);
+str2 = strcat('\sigma : ', num2str(histHappy.F0.deviation));
+text(50, 5e-3, str2);
+axis([0, 600, 0, 8e-3]);
+
+% Adjust figure
+box on;
+hold off;
+
+% Create legend from accumulated handles and labels
+hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
+set(hLegend,'Interpreter','none');
+% legend off;
+
+
+
+%============================================================================================================================%
+%============================================================================================================================%
+% distribution of Time
+figure;
+
+% Time of Neutral
+subplot(2,2,1);
+title('distribution of time of state Neutral');
+hold on;
+LegHandles = []; LegText = {};
+
+% REPLACE_WITH_DASH_DASH- Plot data originally in dataset "purifiedNeutral.Time"
+[CdfF,CdfX] = ecdf(purifiedNeutral.Time,'Function','cdf');  % compute empirical cdf
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedNeutral.Time,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,'edges',BinEdge);
+hLine = bar(BinCenter,BinHeight,'hist');
+set(hLine,'FaceColor','blue','EdgeColor','black',...
+    'LineStyle','-', 'LineWidth',1);
+xlabel('Time Duration (ms)');
+ylabel('Density');
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'NeutralTime';
+
+% Create grid where function will be computed
+XLim = get(gca,'XLim');
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+% REPLACE_WITH_DASH_DASH- Create fit "fitNeutralTime"
+
+% Fit this distribution to get parameter values
+% To use parameter estimates from the original fit:
+
+pd1 = fitdist(purifiedNeutral.Time, 'gamma');
+histNeutral.Time.Shape = pd1.a;
+histNeutral.Time.Scale = pd1.b;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
+    'LineStyle','-', 'LineWidth',2,...
+    'Marker','none', 'MarkerSize',6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'fitNeutralTime';
+
+str1 = 'E(X): ';
+str2 = 'Var(X): '; 
+
+text(600, 4e-3, str1);
+text(600, 3.5e-3, num2str(histNeutral.Time.Shape * histNeutral.Time.Scale));
+text(600, 3e-3, str2);
+text(600, 2.5e-3, num2str(histNeutral.Time.Shape * histNeutral.Time.Scale .^ 2));
+axis([0, 800, 0, 6e-3]);
+% Adjust figure
+box on;
+hold off;
+
+% Create legend from accumulated handles and labels
+hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
+set(hLegend,'Interpreter','none');
+% legend off;
+
+
+
+% Time of Sad
+subplot(2,2,3);
+title('distribution of time of state Sad');
+hold on;
+LegHandles = []; LegText = {};
+
+% REPLACE_WITH_DASH_DASH- Plot data originally in dataset "purifiedSad.Time"
+[CdfF,CdfX] = ecdf(purifiedSad.Time,'Function','cdf');  % compute empirical cdf
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedSad.Time,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,'edges',BinEdge);
+hLine = bar(BinCenter,BinHeight,'hist');
+set(hLine,'FaceColor','blue','EdgeColor','black',...
+    'LineStyle','-', 'LineWidth',1);
+xlabel('Time Duration (ms)');
+ylabel('Density');
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'SadTime';
+
+% Create grid where function will be computed
+XLim = get(gca,'XLim');
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+% REPLACE_WITH_DASH_DASH- Create fit "fitSadTime"
+
+% Fit this distribution to get parameter values
+% To use parameter estimates from the original fit:
+
+pd1 = fitdist(purifiedSad.Time, 'gamma');
+histSad.Time.Shape = pd1.a;
+histSad.Time.Scale = pd1.b;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
+    'LineStyle','-', 'LineWidth',2,...
+    'Marker','none', 'MarkerSize',6);
+% text('Scale Factor', pd1.b);
+% text('Shape Factor', pd1.a);
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'fitSadTime';
+
+text(600, 4e-3, str1);
+text(600, 3.5e-3, num2str(histSad.Time.Shape * histSad.Time.Scale));
+text(600, 3e-3, str2);
+text(600, 2.5e-3, num2str(histSad.Time.Shape * histSad.Time.Scale .^ 2));
+axis([0, 800, 0, 6e-3]);
+% Adjust figure
+box on;
+hold off;
+
+% Create legend from accumulated handles and labels
+hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
+set(hLegend,'Interpreter','none');
+
+
+
+% Time of Angry
+subplot(2,2,2);
+title('distribution of time of state Angry');
+hold on;
+LegHandles = []; LegText = {};
+
+% REPLACE_WITH_DASH_DASH- Plot data originally in dataset "purifiedAngry.Time"
+[CdfF,CdfX] = ecdf(purifiedAngry.Time,'Function','cdf');  % compute empirical cdf
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedAngry.Time,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,'edges',BinEdge);
+hLine = bar(BinCenter,BinHeight,'hist');
+set(hLine,'FaceColor','blue','EdgeColor','black',...
+    'LineStyle','-', 'LineWidth',1);
+xlabel('Time Duration (ms)');
+ylabel('Density');
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'AngryTime';
+
+% Create grid where function will be computed
+XLim = get(gca,'XLim');
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+% REPLACE_WITH_DASH_DASH- Create fit "fitAngryTime"
+
+% Fit this distribution to get parameter values
+% To use parameter estimates from the original fit:
+
+pd1 = fitdist(purifiedAngry.Time, 'gamma');
+histAngry.Time.Shape = pd1.a;
+histAngry.Time.Scale = pd1.b;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
+    'LineStyle','-', 'LineWidth',2,...
+    'Marker','none', 'MarkerSize',6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'fitAngryTime';
+
+text(600, 4e-3, str1);
+text(600, 3.5e-3, num2str(histAngry.Time.Shape * histAngry.Time.Scale));
+text(600, 3e-3, str2);
+text(600, 2.5e-3, num2str(histAngry.Time.Shape * histAngry.Time.Scale .^ 2));
+axis([0, 800, 0, 6e-3]);
+% Adjust figure
+box on;
+hold off;
+
+% Create legend from accumulated handles and labels
+hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
+set(hLegend,'Interpreter','none');
+
+
+
+% Time of Happy
+subplot(2,2,4);
+title('distribution of time of state Happy');
+hold on;
+LegHandles = []; LegText = {};
+
+% REPLACE_WITH_DASH_DASH- Plot data originally in dataset "purifiedHappy.Time"
+[CdfF,CdfX] = ecdf(purifiedHappy.Time,'Function','cdf');  % compute empirical cdf
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedHappy.Time,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,'edges',BinEdge);
+hLine = bar(BinCenter,BinHeight,'hist');
+set(hLine,'FaceColor','blue','EdgeColor','black',...
+    'LineStyle','-', 'LineWidth',1);
+xlabel('Time Duration (ms)');
+ylabel('Density');
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'HappyTime';
+
+% Create grid where function will be computed
+XLim = get(gca,'XLim');
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+% REPLACE_WITH_DASH_DASH- Create fit "fitHappyTime"
+
+% Fit this distribution to get parameter values
+% To use parameter estimates from the original fit:
+
+pd1 = fitdist(purifiedHappy.Time, 'gamma');
+histHappy.Time.Shape = pd1.a;
+histHappy.Time.Scale = pd1.b;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
+    'LineStyle','-', 'LineWidth',2,...
+    'Marker','none', 'MarkerSize',6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'fitHappyTime';
+
+text(600, 4e-3, str1);
+text(600, 3.5e-3, num2str(histHappy.Time.Shape * histHappy.Time.Scale));
+text(600, 3e-3, str2);
+text(600, 2.5e-3, num2str(histHappy.Time.Shape * histHappy.Time.Scale .^ 2));
+axis([0, 800, 0, 6e-3]);
+% Adjust figure
+box on;
+hold off;
+
+% Create legend from accumulated handles and labels
+hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
+set(hLegend,'Interpreter','none');
+
+
+
+%============================================================================================================================%
+%============================================================================================================================%
+% distribution of Pow
+figure;
+
+% Preprocessing —— add 32dB amp for each group due to compensation of
+% instantaneous power threshold in defaultparams.m REPLACE_WITH_DASH_DASH line 36
+purifiedNeutral.Pow = ampxdB(purifiedNeutral.Pow, 40);
+purifiedSad.Pow = ampxdB(purifiedSad.Pow, 40);
+purifiedAngry.Pow = ampxdB(purifiedAngry.Pow, 40);
+purifiedHappy.Pow = ampxdB(purifiedHappy.Pow, 40);
+
+
+% Pow of Neutral
+subplot(2,2,1);
+title('distribution of pow of state Neutral');
+hold on;
+LegHandles = []; LegText = {};
+
+% REPLACE_WITH_DASH_DASH- Plot data originally in dataset "purifiedNeutral.Pow"
+[CdfF,CdfX] = ecdf(purifiedNeutral.Pow,'Function','cdf');  % compute empirical cdf
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedNeutral.Pow,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,'edges',BinEdge);
+hLine = bar(BinCenter,BinHeight,'hist');
+set(hLine,'FaceColor','blue','EdgeColor','black',...
+    'LineStyle','-', 'LineWidth',1);
+xlabel('Pow (dB)');
+ylabel('Density');
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'NeutralPow';
+
+% Create grid where function will be computed
+XLim = get(gca,'XLim');
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+% REPLACE_WITH_DASH_DASH- Create fit "fitNeutralPow"
+
+% Fit this distribution to get parameter values
+% To use parameter estimates from the original fit:
+
+pd1 = fitdist(purifiedNeutral.Pow, 'normal');
+histNeutral.Pow.average = pd1.mean;
+histNeutral.Pow.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
+    'LineStyle','-', 'LineWidth',2,...
+    'Marker','none', 'MarkerSize',6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'fitNeutralPow';
+
+str1 = strcat('\mu : ', num2str(histNeutral.Pow.average));
+text(0, 0.1, str1);
+str2 = strcat('\sigma : ', num2str(histNeutral.Pow.deviation));
+text(0, 0.08, str2);
+axis tight;
+
+% Adjust figure
+box on;
+hold off;
+
+% Create legend from accumulated handles and labels
+hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
+set(hLegend,'Interpreter','none');
+% legend off;
+
+
+
+% Pow of Sad
+subplot(2,2,3);
+title('distribution of pow of state Sad');
+hold on;
+LegHandles = []; LegText = {};
+
+% REPLACE_WITH_DASH_DASH- Plot data originally in dataset "purifiedSad.Pow"
+[CdfF,CdfX] = ecdf(purifiedSad.Pow,'Function','cdf');  % compute empirical cdf
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedSad.Pow,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,'edges',BinEdge);
+hLine = bar(BinCenter,BinHeight,'hist');
+set(hLine,'FaceColor','blue','EdgeColor','black',...
+    'LineStyle','-', 'LineWidth',1);
+xlabel('Pow (dB)');
+ylabel('Density');
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'SadPow';
+
+% Create grid where function will be computed
+XLim = get(gca,'XLim');
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+% REPLACE_WITH_DASH_DASH- Create fit "fitSadPow"
+
+% Fit this distribution to get parameter values
+% To use parameter estimates from the original fit:
+
+pd1 = fitdist(purifiedSad.Pow, 'normal');
+histSad.Pow.average = pd1.mean;
+histSad.Pow.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
+    'LineStyle','-', 'LineWidth',2,...
+    'Marker','none', 'MarkerSize',6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'fitSadPow';
+
+str1 = strcat('\mu : ', num2str(histSad.Pow.average));
+text(0, 0.1, str1);
+str2 = strcat('\sigma : ', num2str(histSad.Pow.deviation));
+text(0, 0.08, str2);
+axis tight;
+
+% Adjust figure
+box on;
+hold off;
+
+% Create legend from accumulated handles and labels
+hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
+set(hLegend,'Interpreter','none');
+% legend off;
+
+
+
+% Pow of Angry
+subplot(2,2,2);
+title('distribution of pow of state Angry');
+hold on;
+LegHandles = []; LegText = {};
+
+% REPLACE_WITH_DASH_DASH- Plot data originally in dataset "purifiedAngry.Pow"
+[CdfF,CdfX] = ecdf(purifiedAngry.Pow,'Function','cdf');  % compute empirical cdf
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedAngry.Pow,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,'edges',BinEdge);
+hLine = bar(BinCenter,BinHeight,'hist');
+set(hLine,'FaceColor','blue','EdgeColor','black',...
+    'LineStyle','-', 'LineWidth',1);
+xlabel('Pow (dB)');
+ylabel('Density');
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'AngryPow';
+
+% Create grid where function will be computed
+XLim = get(gca,'XLim');
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+% REPLACE_WITH_DASH_DASH- Create fit "fitAngryPow"
+
+% Fit this distribution to get parameter values
+% To use parameter estimates from the original fit:
+
+pd1 = fitdist(purifiedAngry.Pow, 'normal');
+histAngry.Pow.average = pd1.mean;
+histAngry.Pow.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
+    'LineStyle','-', 'LineWidth',2,...
+    'Marker','none', 'MarkerSize',6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'fitAngryPow';
+
+str1 = strcat('\mu : ', num2str(histAngry.Pow.average));
+text(0, 0.1, str1);
+str2 = strcat('\sigma : ', num2str(histAngry.Pow.deviation));
+text(0, 0.08, str2);
+axis tight;
+
+% Adjust figure
+box on;
+hold off;
+
+% Create legend from accumulated handles and labels
+hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
+set(hLegend,'Interpreter','none');
+% legend off;
+
+
+
+% Pow of Happy
+subplot(2,2,4);
+title('distribution of pow of state Happy');
+hold on;
+LegHandles = []; LegText = {};
+
+% REPLACE_WITH_DASH_DASH- Plot data originally in dataset "purifiedHappy.Pow"
+[CdfF,CdfX] = ecdf(purifiedHappy.Pow,'Function','cdf');  % compute empirical cdf
+BinInfo.rule = 3;
+BinInfo.nbins = 10;
+[~,BinEdge] = internal.stats.histbins(purifiedHappy.Pow,[],[],BinInfo,CdfF,CdfX);
+[BinHeight,BinCenter] = ecdfhist(CdfF,CdfX,'edges',BinEdge);
+hLine = bar(BinCenter,BinHeight,'hist');
+set(hLine,'FaceColor','blue','EdgeColor','black',...
+    'LineStyle','-', 'LineWidth',1);
+xlabel('Pow (dB)');
+ylabel('Density');
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'HappyPow';
+
+% Create grid where function will be computed
+XLim = get(gca,'XLim');
+XLim = XLim + [-1 1] * 0.01 * diff(XLim);
+XGrid = linspace(XLim(1),XLim(2),100);
+
+% REPLACE_WITH_DASH_DASH- Create fit "fitHappyPow"
+
+% Fit this distribution to get parameter values
+% To use parameter estimates from the original fit:
+
+pd1 = fitdist(purifiedHappy.Pow, 'normal');
+histHappy.Pow.average = pd1.mean;
+histHappy.Pow.deviation = pd1.sigma;
+YPlot = pdf(pd1,XGrid);
+hLine = plot(XGrid,YPlot,'Color',[1 0 0],...
+    'LineStyle','-', 'LineWidth',2,...
+    'Marker','none', 'MarkerSize',6);
+LegHandles(end+1) = hLine;
+LegText{end+1} = 'fitHappyPow';
+
+str1 = strcat('\mu : ', num2str(histHappy.Pow.average));
+text(0, 0.1, str1);
+str2 = strcat('\sigma : ', num2str(histHappy.Pow.deviation));
+text(0, 0.08, str2);
+axis tight;
+
+% Adjust figure
+box on;
+hold off;
+
+% Create legend from accumulated handles and labels
+hLegend = legend(LegHandles,LegText,'Orientation', 'vertical', 'FontSize', 9, 'Location', 'northeast');
+set(hLegend,'Interpreter','none');
+% legend off;
+##### SOURCE END #####
+--></body></html>
